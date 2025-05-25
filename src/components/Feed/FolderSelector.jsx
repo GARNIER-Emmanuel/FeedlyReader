@@ -1,12 +1,12 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-export default function FolderSelector({ folders, selected, onChange, countsByFolder }) {
- 
-   const effectiveFolders = folders ?? (countsByFolder ? Object.keys(countsByFolder) : []);
+export default function FolderSelector({ folders, selected, onChange }) {
+  const navigate = useNavigate();
 
-   return (
+  return (
     <div
-      className="folder-selector d-flex gap-3 overflow-auto px-2 py-2 mb-4"
+      className="folder-selector d-flex gap-3 overflow-auto px-2 py-2 mb-4 align-items-center"
       role="list"
       aria-label="Sélecteur de dossiers"
       style={{
@@ -14,7 +14,17 @@ export default function FolderSelector({ folders, selected, onChange, countsByFo
         WebkitOverflowScrolling: "touch",
       }}
     >
-      {effectiveFolders.map((folder) => (
+      {/* Bouton + en premier */}
+      <button
+        onClick={() => navigate("/add-folder")}
+        className="folder-pill btn btn-sm btn-outline-primary folder-add-btn"
+        aria-label="Ajouter un nouveau dossier"
+        title="Ajouter un nouveau dossier"
+      >
+        Gérer
+      </button>
+
+      {folders.map((folder) => (
         <button
           key={folder}
           onClick={() => onChange(folder)}
@@ -26,16 +36,12 @@ export default function FolderSelector({ folders, selected, onChange, countsByFo
             scrollSnapAlign: "center",
             whiteSpace: "nowrap",
             userSelect: "none",
+            borderRadius: "1rem",
           }}
           role="listitem"
           aria-current={selected === folder ? "true" : undefined}
         >
-          {folder}{" "}
-          {countsByFolder && countsByFolder[folder] !== undefined && (
-            <span style={{ fontWeight: "bold", marginLeft: 6 }}>
-              ({countsByFolder[folder]})
-            </span>
-          )}
+          {folder}
         </button>
       ))}
     </div>

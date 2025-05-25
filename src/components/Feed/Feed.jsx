@@ -36,6 +36,7 @@ export default function Feed({ feeds }) {
           const items = [...xml.querySelectorAll("item")].map((item, index) => {
             const title = item.querySelector("title")?.textContent || "";
             const summary = item.querySelector("description")?.textContent || "";
+            const pubDate = item.querySelector("pubDate")?.textContent || "";
             const wordCount = (title + " " + summary).trim().split(/\s+/).length;
             const readingTime = Math.max(1, Math.round(wordCount / 200));
             const popularity = Math.floor(Math.random() * 1000);
@@ -47,6 +48,7 @@ export default function Feed({ feeds }) {
               readingTime,
               popularity,
               source: feed.name,
+              pubDate: pubDate ? new Date(pubDate) : null,
             };
           });
           return items;
@@ -107,14 +109,21 @@ export default function Feed({ feeds }) {
   });
 
   const filteredByFeed = selectedFeed
-  ? filteredByReadingTime.filter(article => article.source === selectedFeed)
-  : filteredByReadingTime;
+    ? filteredByReadingTime.filter(article => article.source === selectedFeed)
+    : filteredByReadingTime;
 
   const sortedArticles = [...filteredByFeed].sort((a, b) => {
     if (sortBy === "popularity") {
       return sortOrder === "asc"
         ? a.popularity - b.popularity
         : b.popularity - a.popularity;
+    } else if (sortBy === "date") {
+      // Trier par date (du plus récent au plus ancien, ou inverse)
+      if (!a.pubDate) return 1;  // articles sans date à la fin
+      if (!b.pubDate) return -1;
+      return sortOrder === "asc"
+        ? a.pubDate - b.pubDate
+        : b.pubDate - a.pubDate;
     } else {
       return sortOrder === "asc"
         ? a.title.localeCompare(b.title)

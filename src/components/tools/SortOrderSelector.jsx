@@ -11,6 +11,7 @@ export default function SortOrderSelector({ sortBy, setSortBy, sortOrder, setSor
       >
         <option value="popularity">Popularité</option>
         <option value="title">Titre</option>
+        <option value="date">Date</option>
       </select>
 
       <select
