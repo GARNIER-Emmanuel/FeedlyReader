@@ -3,6 +3,8 @@ import React, { useState } from "react";
 export default function FeedItem({ article }) {
   const [expanded, setExpanded] = useState(false);
 
+  const fullText = article.content || article.summary || "";
+
   return (
     <div
       className="card mb-4 shadow-sm border border-primary"
@@ -19,9 +21,14 @@ export default function FeedItem({ article }) {
           ⏱️ Temps de lecture estimé : {article.readingTime} min
         </p>
 
-        <p className="card-text text-secondary" style={{ fontSize: "0.9rem", lineHeight: "1.4" }}>
-          {expanded ? article.summary : article.summary.slice(0, 200) + "…"}
-        </p>
+            <p
+          className="card-text text-secondary article-content"
+          style={{ fontSize: "0.9rem", lineHeight: "1.4" }}
+          dangerouslySetInnerHTML={{
+            __html: expanded ? fullText : fullText.slice(0, 200) + "…",
+          }}
+        ></p>
+
 
         <div className="d-flex justify-content-between align-items-center mt-3">
           <a
@@ -30,8 +37,8 @@ export default function FeedItem({ article }) {
             rel="noopener noreferrer"
             className="text-primary fw-semibold"
             style={{ textDecoration: "none" }}
-            onMouseEnter={e => (e.target.style.color = "#0c63e4")}
-            onMouseLeave={e => (e.target.style.color = "#0d6efd")}
+            onMouseEnter={(e) => (e.target.style.color = "#0c63e4")}
+            onMouseLeave={(e) => (e.target.style.color = "#0d6efd")}
           >
             🔗 Lire sur le site
           </a>
@@ -40,11 +47,11 @@ export default function FeedItem({ article }) {
             onClick={() => setExpanded(!expanded)}
             className="btn btn-primary btn-sm rounded-pill px-3"
             style={{ backgroundColor: "#7dd3fc", borderColor: "#7dd3fc" }}
-            onMouseEnter={e => {
+            onMouseEnter={(e) => {
               e.target.style.backgroundColor = "#38bdf8";
               e.target.style.borderColor = "#38bdf8";
             }}
-            onMouseLeave={e => {
+            onMouseLeave={(e) => {
               e.target.style.backgroundColor = "#7dd3fc";
               e.target.style.borderColor = "#7dd3fc";
             }}
