@@ -5,6 +5,15 @@ export default function FeedItem({ article }) {
 
   const fullText = article.content || article.summary || "";
 
+  // Formater la date si elle existe
+  const formattedDate = article.pubDate
+    ? new Date(article.pubDate).toLocaleDateString("fr-FR", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Date inconnue";
+
   return (
     <div
       className="card mb-4 shadow-sm border border-primary"
@@ -17,18 +26,23 @@ export default function FeedItem({ article }) {
         <h6 className="card-subtitle mb-2 text-muted" style={{ fontSize: "0.8rem" }}>
           Source : {article.source}
         </h6>
+
+        {/* Ajout de la date d'apparition */}
+        <p className="text-muted" style={{ fontSize: "0.8rem", marginBottom: "0.8rem" }}>
+          🗓️ Publié le : {formattedDate}
+        </p>
+
         <p className="text-primary" style={{ fontSize: "0.9rem", marginBottom: "0.8rem" }}>
           ⏱️ Temps de lecture estimé : {article.readingTime} min
         </p>
 
-            <p
+        <p
           className="card-text text-secondary article-content"
           style={{ fontSize: "0.9rem", lineHeight: "1.4" }}
           dangerouslySetInnerHTML={{
             __html: expanded ? fullText : fullText.slice(0, 200) + "…",
           }}
         ></p>
-
 
         <div className="d-flex justify-content-between align-items-center mt-3">
           <a
