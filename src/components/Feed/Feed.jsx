@@ -33,24 +33,38 @@ export default function Feed({ feeds }) {
           const data = await res.json();
           const parser = new DOMParser();
           const xml = parser.parseFromString(data.contents, "text/xml");
-          const items = [...xml.querySelectorAll("item")].map((item, index) => {
-            const title = item.querySelector("title")?.textContent || "";
-            const summary = item.querySelector("description")?.textContent || "";
-            const pubDate = item.querySelector("pubDate")?.textContent || "";
-            const wordCount = (title + " " + summary).trim().split(/\s+/).length;
-            const readingTime = Math.max(1, Math.round(wordCount / 200));
-            const popularity = Math.floor(Math.random() * 1000);
-            return {
-              id: `${feed.name}-${index}`,
-              title,
-              summary,
-              url: item.querySelector("link")?.textContent || "#",
-              readingTime,
-              popularity,
-              source: feed.name,
-              pubDate: pubDate ? new Date(pubDate) : null,
-            };
-          });
+          const items = await Promise.all(
+            [...xml.querySelectorAll("item")].map(async (item, index) => {
+              const title = item.querySelector("title")?.textContent || "";
+              const summary = item.querySelector("description")?.textContent || "";
+              const pubDate = item.querySelector("pubDate")?.textContent || "";
+              let readingTime = 1;
+              try {
+                const extractUrl = `http://localhost:5001/extract?url=${encodeURIComponent(item.querySelector("link")?.textContent || "")}`;
+                const extractRes = await fetch(extractUrl);
+                const extractData = await extractRes.json();
+                const articleText = extractData.content || "";
+                const wordCount = articleText.trim().split(/\s+/).length;
+                readingTime = Math.max(1, Math.round(wordCount / 200));
+              } catch (e) {
+                console.warn("Erreur extraction contenu complet, fallback résumé :", e);
+                const fallbackCount = (title + " " + summary).trim().split(/\s+/).length;
+                readingTime = Math.max(1, Math.round(fallbackCount / 200));
+              }
+
+              const popularity = Math.floor(Math.random() * 1000);
+              return {
+                id: `${feed.name}-${index}`,
+                title,
+                summary,
+                url: item.querySelector("link")?.textContent || "#",
+                readingTime,
+                popularity,
+                source: feed.name,
+                pubDate: pubDate ? new Date(pubDate) : null,
+              };
+            })
+          );
           return items;
         });
 
