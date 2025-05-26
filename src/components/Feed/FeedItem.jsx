@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function FeedItem({ article }) {
   const [expanded, setExpanded] = useState(false);
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
 
   const storageKey = `read-${article.id}`;
   const [read, setRead] = useState(() => {
@@ -25,13 +27,35 @@ export default function FeedItem({ article }) {
       })
     : "Date inconnue";
 
+  // Intersection Observer pour détecter apparition dans viewport
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div
-      className="card mb-4 shadow-sm border border-primary"
+      ref={ref}
+        className={`card mb-4 shadow-sm border border-primary ${
+        visible ? "animate__animated animate__fadeIn" : "opacity-0"
+      }`}
+
       style={{
         borderColor: "#bae6fd",
         borderRadius: "1rem",
-        backgroundColor: read ? "#dcfce7" : "#e0f2fe", // ✅ fond vert clair si lu
+        backgroundColor: read ? "#dcfce7" : "#e0f2fe", // fond vert clair si lu
+        transition: "background-color 0.3s ease, border-color 0.3s ease",
       }}
     >
       <div className="card-body">

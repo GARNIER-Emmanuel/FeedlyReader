@@ -44,15 +44,23 @@
 }
 
 .article-content img {
-  max-width: 100%;
-  height: auto;
+  max-width: 100%;       /* largeur max 100% du conteneur */
+  max-height: 200px;     /* limite la hauteur max (ajuste selon ton besoin) */
+  width: auto;           /* largeur auto pour ne pas forcer une déformation */
+  height: auto;          /* conserve le ratio */
   border-radius: 0.5rem;
   margin: 1rem 0;
   display: block;
+  object-fit: contain;
 }
-.article-content img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  overflow-x: hidden;
+  outline: none; /* enlève le contour par défaut, tu peux personnaliser si besoin */
 }
+
+
 
