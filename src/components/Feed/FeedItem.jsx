@@ -3,9 +3,20 @@ import React, { useState } from "react";
 export default function FeedItem({ article }) {
   const [expanded, setExpanded] = useState(false);
 
+  const storageKey = `read-${article.id}`;
+  const [read, setRead] = useState(() => {
+    const saved = localStorage.getItem(storageKey);
+    return saved === "true";
+  });
+
+  const handleReadChange = () => {
+    const newValue = !read;
+    setRead(newValue);
+    localStorage.setItem(storageKey, newValue.toString());
+  };
+
   const fullText = article.content || article.summary || "";
 
-  // Formater la date si elle existe
   const formattedDate = article.pubDate
     ? new Date(article.pubDate).toLocaleDateString("fr-FR", {
         year: "numeric",
@@ -17,17 +28,35 @@ export default function FeedItem({ article }) {
   return (
     <div
       className="card mb-4 shadow-sm border border-primary"
-      style={{ borderColor: "#bae6fd", borderRadius: "1rem", backgroundColor: "#e0f2fe" }}
+      style={{
+        borderColor: "#bae6fd",
+        borderRadius: "1rem",
+        backgroundColor: read ? "#dcfce7" : "#e0f2fe", // ✅ fond vert clair si lu
+      }}
     >
       <div className="card-body">
-        <h5 className="card-title text-primary mb-1" style={{ fontWeight: "700" }}>
-          {article.title}
-        </h5>
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h5 className="card-title text-primary mb-1" style={{ fontWeight: "700" }}>
+            {article.title}
+          </h5>
+          <div className="form-check form-switch">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id={`readSwitch-${article.id}`}
+              checked={read}
+              onChange={handleReadChange}
+            />
+            <label className="form-check-label" htmlFor={`readSwitch-${article.id}`}>
+              Lu
+            </label>
+          </div>
+        </div>
+
         <h6 className="card-subtitle mb-2 text-muted" style={{ fontSize: "0.8rem" }}>
           Source : {article.source}
         </h6>
 
-        {/* Ajout de la date d'apparition */}
         <p className="text-muted" style={{ fontSize: "0.8rem", marginBottom: "0.8rem" }}>
           🗓️ Publié le : {formattedDate}
         </p>
