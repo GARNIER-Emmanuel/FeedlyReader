@@ -140,3 +140,15 @@ h2.mb-3.pb-2.border-bottom {
   justify-content: flex-start;
 }
 
+
+.feed-container {
+  overflow-x: hidden;
+}
+
+.filter-bar > div {
+  min-width: 0; /* Permet aux enfants flex de rétrécir */
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; /* si tu veux couper les textes longs */
+}

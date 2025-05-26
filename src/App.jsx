@@ -67,7 +67,7 @@ export default function App() {
       >
         <div className="container-fluid py-4">
           <header
-            className="mb-4 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
+            className="mb-2 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
             style={{ gap: "1rem" }}
           >
             <div>
@@ -88,6 +88,7 @@ export default function App() {
             />
           </header>
 
+
           <Routes>
             <Route
               path="/"
@@ -101,7 +102,7 @@ export default function App() {
                   </p>
 
                   <section
-                    className="mb-3 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start folder-selector"
+                    className="mb-0 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start folder-selector"
                     style={{ overflowX: "auto", whiteSpace: "nowrap" }}
                   >
                     <FolderSelector
