@@ -14,9 +14,16 @@ export default function Feed({ feeds }) {
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
   const [selectedFeed, setSelectedFeed] = useState("");
+  const [selectedFolder, setSelectedFolder] = useState(null);
 
   // Nouvel état pour gérer l’affichage de la flèche
   const [showScrollButton, setShowScrollButton] = useState(false);
+  useEffect(() => {
+    setSelectedFeed("");  // pour charger tous les feeds du dossier
+  }, [selectedFolder]);
+  const feedsInFolder = selectedFolder
+    ? feeds.filter(feed => feed.folder === selectedFolder)
+    : feeds;
 
   useEffect(() => {
     const fetchFeeds = async () => {
@@ -106,6 +113,13 @@ export default function Feed({ feeds }) {
       article.summary.toLowerCase().includes(term)
     );
   });
+
+  const addFeed = (folder, newFeed) => {
+    setFeedsByFolder(prev => ({
+      ...prev,
+      [folder]: [...(prev[folder] || []), newFeed]
+    }));
+  };
 
   const filteredByReadingTime = filteredBySearch.filter((article) => {
     switch (filterReadingTime) {
