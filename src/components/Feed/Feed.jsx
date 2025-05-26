@@ -4,6 +4,7 @@ import SearchBar from "../tools/SearchBar";
 import ReadingTimeFilter from "../tools/ReadingTimeFilter";
 import SortOrderSelector from "../tools/SortOrderSelector";
 import FeedSelector from "../tools/FeedSelector";
+import '../Style/Feed.css';
 
 export default function Feed({ feeds }) {
   const [allArticles, setAllArticles] = useState([]);
@@ -173,14 +174,10 @@ export default function Feed({ feeds }) {
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-
-  return (
-    <div className="container my-4">
-   {/* Filtres */}
-    <div
-      className="card p-3 mb-4"
-      style={{ backgroundColor: "#e0f2fe", borderColor: "#bae6fd" }}
-    >
+return (
+  <div className="container my-4">
+    {/* Filtres */}
+    <div className="filtre p-3 mb-4 custom-feed-filter-card">
       <div className="row g-3 align-items-center">
         <div className="col-md">
           <SearchBar value={searchTerm} onChange={setSearchTerm} />
@@ -206,40 +203,24 @@ export default function Feed({ feeds }) {
       </div>
     </div>
 
-
-      {/* Affichage loader pendant chargement */}
-      {loading ? (
-        <div
-          className="spinner"
-          aria-label="Chargement en cours"
-          style={{
-            border: "4px solid rgba(0, 0, 0, 0.1)",
-            borderLeftColor: "#0284c7",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            animation: "spin 1s linear infinite",
-            margin: "2rem auto",
-          }}
-        />
-      ) : (
-        <>
+    {/* Affichage loader pendant chargement */}
+    {loading ? (
+      <div className="spinner" aria-label="Chargement en cours" />
+    ) : (
+      <>
         {/* Titre avec compteur */}
         <section className="mb-5">
-          <h2
-            className="mb-3 pb-2 border-bottom"
-            style={{ color: "#0369a1", borderColor: "#bae6fd", fontWeight: "700" }}
-          >
-           {`${visibleArticles.length} / ${filteredByFeed.length} articles${selectedFeed ? ` de ${selectedFeed}` : ""}`}
+          <h2 className="mb-3 pb-2 border-bottom">
+            {`${visibleArticles.length} / ${filteredByFeed.length} articles${selectedFeed ? ` de ${selectedFeed}` : ""}`}
           </h2>
 
           {/* Si aucun article visible */}
           {visibleArticles.length === 0 ? (
-            <p style={{ fontStyle: "italic", color: "#888" }}>Aucun article trouvé</p>
+            <p className="no-articles-text">Aucun article trouvé</p>
           ) : (
             <div className="row g-4">
               {visibleArticles.map(article => (
-                <div key={article.id} className="col-12 col-md-6 col-lg-4">
+                <div key={article.id} className="col-12 col-md-4 col-lg-3">
                   <FeedItem article={article} />
                 </div>
               ))}
@@ -247,99 +228,37 @@ export default function Feed({ feeds }) {
           )}
         </section>
 
-
-          {/* Boutons charger plus / tout charger */}
-          {visibleArticles.length < sortedArticles.length && (
-            <div
-              className="d-flex justify-content-center gap-3 mt-5"
-              style={{ gap: "1rem" }}
-            >
-              <button
-                onClick={handleLoadMore}
-                className="btn btn-outline-primary rounded-pill px-4 py-2"
-                style={{
-                  backgroundColor: "#7dd3fc",
-                  borderColor: "#7dd3fc",
-                  color: "#0c4a6e",
-                  fontWeight: "600",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#38bdf8";
-                  e.target.style.borderColor = "#38bdf8";
-                  e.target.style.color = "white";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#7dd3fc";
-                  e.target.style.borderColor = "#7dd3fc";
-                  e.target.style.color = "#0c4a6e";
-                }}
-              >
-                Charger 10 articles de plus
-              </button>
-
-              <button
-                onClick={handleLoadAll}
-                className="btn btn-primary rounded-pill px-4 py-2"
-                style={{
-                  backgroundColor: "#0284c7",
-                  borderColor: "#0284c7",
-                  color: "white",
-                  fontWeight: "600",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#0369a1";
-                  e.target.style.borderColor = "#0369a1";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#0284c7";
-                  e.target.style.borderColor = "#0284c7";
-                }}
-              >
-                Charger tous les articles
-              </button>
-            </div>
-          )}
-
-          {/* Bouton flèche pour remonter en haut, affiché seulement quand showScrollButton = true */}
-          {showScrollButton && (
+        {/* Boutons charger plus / tout charger */}
+        {visibleArticles.length < sortedArticles.length && (
+          <div className="buttons-container">
             <button
-              onClick={scrollToTop}
-              aria-label="Remonter en haut"
-              style={{
-                position: "fixed",
-                bottom: "2rem",
-                right: "2rem",
-                backgroundColor: "#0284c7",
-                border: "none",
-                borderRadius: "50%",
-                width: "3rem",
-                height: "3rem",
-                color: "white",
-                fontSize: "1.2rem",
-                cursor: "pointer",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-                zIndex: 1000,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#0369a1")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#0284c7")}
+              onClick={handleLoadMore}
+              className="btn-outline-primary custom-load-more"
             >
-              ↑
+              Charger 10 articles de plus
             </button>
-          )}
-        </>
-      )}
 
-      {/* Animation CSS clé spin */}
-      <style>{`
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-    </div>
-  );
+            <button
+              onClick={handleLoadAll}
+              className="btn-primary custom-load-all"
+            >
+              Charger tous les articles
+            </button>
+          </div>
+        )}
+
+        {/* Bouton flèche pour remonter en haut */}
+        {showScrollButton && (
+          <button
+            onClick={scrollToTop}
+            aria-label="Remonter en haut"
+            className="scroll-to-top-btn"
+          >
+            ↑
+          </button>
+        )}
+      </>
+    )}
+  </div>
+);
 }
