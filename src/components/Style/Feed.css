@@ -6,6 +6,9 @@
 .custom-feed-filter-card {
   padding: 1rem;
   margin-bottom: 1.5rem;
+  background-color: #f8fafc;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 /* Loader spinner */
@@ -39,11 +42,20 @@ h2.mb-3.pb-2.border-bottom {
 .no-articles-text {
   font-style: italic;
   color: #888;
+  text-align: center;
+  margin-top: 2rem;
 }
 
 /* Grid for articles */
 .row.g-4 > .col-12.col-md-4.col-lg-3 {
-  /* You can customize spacing if needed */
+  display: flex;
+}
+
+/* Make all feed items stretch to equal height */
+.row.g-4 > .col-12.col-md-4.col-lg-3 > * {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Buttons container */
@@ -114,7 +126,16 @@ h2.mb-3.pb-2.border-bottom {
   background-color: #0369a1;
 }
 
-.filtre{
-  background-color: #393a3a00;
+/* Filtre */
+.filtre {
+  background-color: transparent;
   border: none;
+}
+
+/* Section min-height */
+.full-height-section {
+  min-height: calc(200vh - 600px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }

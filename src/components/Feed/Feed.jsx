@@ -10,8 +10,8 @@ export default function Feed({ feeds }) {
   const [allArticles, setAllArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterReadingTime, setFilterReadingTime] = useState("all");
-  const [sortBy, setSortBy] = useState("popularity");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
   const [selectedFeed, setSelectedFeed] = useState("");
@@ -175,7 +175,9 @@ export default function Feed({ feeds }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 return (
-  <div className="container my-4">
+  <div className="feed-container d-flex flex-column">
+  <div className="container-fluid my-4 flex-grow-1 d-flex flex-column">
+  <div className="container-fluid my-4">
     {/* Filtres */}
     <div className="filtre p-3 mb-4 custom-feed-filter-card">
       <div className="row g-3 align-items-center">
@@ -209,7 +211,7 @@ return (
     ) : (
       <>
         {/* Titre avec compteur */}
-        <section className="mb-5">
+        <section className="mb-5 full-height-section">
           <h2 className="mb-3 pb-2 border-bottom">
             {`${visibleArticles.length} / ${filteredByFeed.length} articles${selectedFeed ? ` de ${selectedFeed}` : ""}`}
           </h2>
@@ -259,6 +261,8 @@ return (
         )}
       </>
     )}
+  </div>
+  </div>
   </div>
 );
 }

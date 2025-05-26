@@ -44,13 +44,14 @@ export default function FeedItem({ article }) {
     return () => observer.disconnect();
   }, []);
 return (
+  
   <div
     ref={ref}
     className={`card feed-item-card mb-4 shadow-sm ${
       visible ? "animate__animated animate__fadeIn" : "opacity-0"
     } ${read ? "read" : ""}`}
   >
-    <div className="d-flex justify-content-between align-items-center mb-2">
+    <div className="d-flex justify-content-between align-items-start mb-2">
       <h5>{article.title}</h5>
       <div className="form-check form-switch custom-read-switch">
         <input

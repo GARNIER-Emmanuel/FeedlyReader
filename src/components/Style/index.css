@@ -11,6 +11,13 @@
   }
 }
 
+.full-width {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+
 /* Fond animé dégradé violet → bleu marine → noir */
 body, html, #root {
   margin: 0;
@@ -25,7 +32,7 @@ body, html, #root {
     #4B0082    /* indigo */
   );
   background-size: 600% 600%;
-  animation: gradientAnimation 15s ease infinite;
+  animation: gradientAnimation 90s ease infinite;
 
   color: #f5deb3; /* couleur texte dorée */
 }
@@ -241,7 +248,7 @@ img {
 
 /* Paragraphes dorés plus clairs et lisibles */
 .card p, .article-content p {
-  color: #ffffff;
+  color: #adbcd3;
 }
 
 /* Liens dorés prononcés avec effet hover */
@@ -253,7 +260,7 @@ img {
 }
 
 .card a:hover {
-  color: #fff1b8;
+  color: #2a66e7;
 }
 
 .custom-read-switch .form-check-label {
@@ -270,4 +277,8 @@ img {
   background-color: #1f1f1f; /* fond plus foncé */
   border: 4px solid #9fe29c; /* bordure complète colorée */
   transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mention{
+  color: #ffffff;
 }

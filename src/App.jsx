@@ -58,6 +58,7 @@ export default function App() {
 
   return (
     <Router>
+      
       <div
         className="min-vh-100"
         style={{
@@ -65,7 +66,8 @@ export default function App() {
           minHeight: "100vh",
         }}
         >
-        <div className="container py-4">
+          
+        <div className="container-fluid py-4">
           <header
             className="mb-4 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
             style={{ gap: "1rem" }}
@@ -73,6 +75,7 @@ export default function App() {
             <div>
               <h1 className="display-5 fw-bold text-primary mb-2">Feedly Reader</h1>
             </div>
+            
             <img
               src={logo}
               alt="Feedly Reader Logo"
@@ -112,7 +115,7 @@ export default function App() {
                     />
                   </section>
 
-                  <main style={{ padding: "0 1rem" }}>
+                  <main className="full-width" style={{ padding: "0 1rem" }}>
                     <Feed
                       feeds={feedsByFolder[selectedFolder]}
                       onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
@@ -123,7 +126,7 @@ export default function App() {
             />
           </Routes>
 
-          <footer className="mt-5 text-center text-muted small">
+          <footer className="mention mt-5 text-center small">
             &copy; 2025 Manu — Feedly Reader
           </footer>
         </div>
