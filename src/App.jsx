@@ -10,7 +10,7 @@ export default function App() {
   const savedFeedsByFolder = JSON.parse(localStorage.getItem("feedsByFolder"));
   const [feedsByFolder, setFeedsByFolder] = useState(savedFeedsByFolder || { ...initialFeedsByFolder });
   const [folders, setFolders] = useState(Object.keys(feedsByFolder));
-  const [selectedFolder, setSelectedFolder] = useState(Object.keys(feedsByFolder)[0]);
+  const [selectedFolder, setSelectedFolder] = useState(Object.keys(feedsByFolder)[0] || "");
 
   // Sauvegarder dans localStorage à chaque modif
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function App() {
     }
   };
 
-  // Supprimer un feed
+  // Supprimer un feed dans un dossier
   const deleteFeedFromFolder = (folderName, feedUrl) => {
     setFeedsByFolder((prev) => {
       const updatedFolder = prev[folderName].filter((feed) => feed !== feedUrl);
@@ -58,15 +58,13 @@ export default function App() {
 
   return (
     <Router>
-      
       <div
         className="min-vh-100"
         style={{
           color: "#f5f5f5",
           minHeight: "100vh",
         }}
-        >
-          
+      >
         <div className="container-fluid py-4">
           <header
             className="mb-4 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
@@ -75,7 +73,7 @@ export default function App() {
             <div>
               <h1 className="display-5 fw-bold text-primary mb-2">Feedly Reader</h1>
             </div>
-            
+
             <img
               src={logo}
               alt="Feedly Reader Logo"
@@ -115,9 +113,11 @@ export default function App() {
                     />
                   </section>
 
+                  {/* Ici on place le Feed, en lui passant les feeds du dossier sélectionné */}
                   <main className="full-width" style={{ padding: "0 1rem" }}>
                     <Feed
-                      feeds={feedsByFolder[selectedFolder]}
+                      feeds={feedsByFolder[selectedFolder] || []}
+                      selectedFolder={selectedFolder}
                       onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
                     />
                   </main>

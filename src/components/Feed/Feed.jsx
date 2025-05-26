@@ -6,7 +6,7 @@ import SortOrderSelector from "../tools/SortOrderSelector";
 import FeedSelector from "../tools/FeedSelector";
 import '../Style/Feed.css';
 
-export default function Feed({ feeds }) {
+export default function Feed({ feeds, selectedFolder, onDeleteFeed }) {
   const [allArticles, setAllArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterReadingTime, setFilterReadingTime] = useState("all");
@@ -14,17 +14,14 @@ export default function Feed({ feeds }) {
   const [sortOrder, setSortOrder] = useState("desc");
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
-  const [selectedFeed, setSelectedFeed] = useState("");
-  const [selectedFolder, setSelectedFolder] = useState(null);
+  const [selectedFeed, setSelectedFeed] = useState(""); // feed sélectionné dans le dossier
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
+  const [lastLoadKey, setLastLoadKey] = useState(0);
 
-  // Nouvel état pour gérer l’affichage de la flèche
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  // Recharger les articles quand feeds ou selectedFeed changent
   useEffect(() => {
-    setSelectedFeed("");  // pour charger tous les feeds du dossier
-  }, [selectedFolder]);
-  const feedsInFolder = selectedFolder
-    ? feeds.filter(feed => feed.folder === selectedFolder)
-    : feeds;
+    setSelectedFeed(""); // reset sélection feed quand dossier change
+  }, [feeds]);
 
   useEffect(() => {
     const fetchFeeds = async () => {
@@ -79,6 +76,7 @@ export default function Feed({ feeds }) {
         const allFeedsItems = await Promise.all(feedPromises);
         setAllArticles(allFeedsItems.flat());
         setVisibleCount(10);
+        setLastLoadKey(prev => prev + 1); 
       } catch (error) {
         console.error("Erreur lors du chargement des feeds", error);
       } finally {
@@ -94,35 +92,31 @@ export default function Feed({ feeds }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [selectedFeed, searchTerm, filterReadingTime]);
 
-  // useEffect pour écouter le scroll et afficher/cacher la flèche
+
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 100) {
-        setShowScrollButton(true);
-      } else {
-        setShowScrollButton(false);
+      const button = document.getElementById("scrollToTop");
+      if (button) {
+        if (window.scrollY > 100) {
+          button.classList.remove("d-none");
+        } else {
+          button.classList.add("d-none");
+        }
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredBySearch = allArticles.filter((article) => {
+ 
+  // Filtres en chaîne
+  const filteredBySearch = allArticles.filter(article => {
     const term = searchTerm.toLowerCase();
-    return (
-      article.title.toLowerCase().includes(term) ||
-      article.summary.toLowerCase().includes(term)
-    );
+    return article.title.toLowerCase().includes(term) || article.summary.toLowerCase().includes(term);
   });
 
-  const addFeed = (folder, newFeed) => {
-    setFeedsByFolder(prev => ({
-      ...prev,
-      [folder]: [...(prev[folder] || []), newFeed]
-    }));
-  };
-
-  const filteredByReadingTime = filteredBySearch.filter((article) => {
+  const filteredByReadingTime = filteredBySearch.filter(article => {
     switch (filterReadingTime) {
       case "5":
         return article.readingTime <= 5;
@@ -141,128 +135,102 @@ export default function Feed({ feeds }) {
     ? filteredByReadingTime.filter(article => article.source === selectedFeed)
     : filteredByReadingTime;
 
+  // Tri
   const sortedArticles = [...filteredByFeed].sort((a, b) => {
     if (sortBy === "popularity") {
-      return sortOrder === "asc"
-        ? a.popularity - b.popularity
-        : b.popularity - a.popularity;
-    } else if (sortBy === "date") {
-      // Trier par date (du plus récent au plus ancien, ou inverse)
-      if (!a.pubDate) return 1;  // articles sans date à la fin
-      if (!b.pubDate) return -1;
-      return sortOrder === "asc"
-        ? a.pubDate - b.pubDate
-        : b.pubDate - a.pubDate;
-    } else {
-      return sortOrder === "asc"
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
+      return sortOrder === "asc" ? a.popularity - b.popularity : b.popularity - a.popularity;
     }
+    if (sortBy === "date") {
+      return sortOrder === "asc"
+        ? (a.pubDate?.getTime() || 0) - (b.pubDate?.getTime() || 0)
+        : (b.pubDate?.getTime() || 0) - (a.pubDate?.getTime() || 0);
+    }
+    return 0;
   });
 
+  
   const visibleArticles = sortedArticles.slice(0, visibleCount);
 
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => Math.min(prev + 10, sortedArticles.length));
+  const loadMore = () => {
+    setVisibleCount((count) => count + 10);
   };
 
-  const handleLoadAll = () => {
-    setVisibleCount(sortedArticles.length);
-  };
+  useEffect(() => {
+    if (!loading) {
+      const audio = new Audio(
+        visibleArticles.length > 0 ? '/audio/ding.mp3' : '/audio/wrongding.mp3'
+      );
+      audio.play().catch(console.warn);
+    }
+  }, [lastLoadKey]);
 
-  // Fonction pour remonter en haut
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-return (
-  <div className="feed-container d-flex flex-column">
-  <div className="container-fluid my-4 flex-grow-1 d-flex flex-column">
-  <div className="container-fluid my-4">
-    {/* Filtres */}
-    <div className="filtre p-3 mb-4 custom-feed-filter-card">
-      <div className="row g-3 align-items-center">
-        <div className="col-md">
-          <SearchBar value={searchTerm} onChange={setSearchTerm} />
-        </div>
-        <div className="col-md">
-          <ReadingTimeFilter value={filterReadingTime} onChange={setFilterReadingTime} />
-        </div>
-        <div className="col-md">
-          <SortOrderSelector
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-          />
-        </div>
-        <div className="col-md">
-          <FeedSelector
-            feeds={feeds}
-            selectedFeed={selectedFeed}
-            setSelectedFeed={setSelectedFeed}
-          />
-        </div>
+
+  
+  return (
+  <div className="feed-container container-fluid px-3">
+    <div className="filter-bar mb-4 d-flex flex-column flex-md-row flex-wrap gap-3 align-items-stretch">
+      <div className="flex-fill">
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      </div>
+      <div className="flex-fill">
+        <ReadingTimeFilter
+          filterReadingTime={filterReadingTime}
+          setFilterReadingTime={setFilterReadingTime}
+        />
+      </div>
+      <div className="flex-fill">
+        <SortOrderSelector
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          setSortBy={setSortBy}
+          setSortOrder={setSortOrder}
+        />
+      </div>
+      <div className="flex-fill">
+        <FeedSelector
+          feeds={feeds}
+          selectedFeed={selectedFeed}
+          setSelectedFeed={setSelectedFeed}
+          onDeleteFeed={onDeleteFeed}
+        />
       </div>
     </div>
 
-    {/* Affichage loader pendant chargement */}
-    {loading ? (
-      <div className="spinner" aria-label="Chargement en cours" />
+   {loading ? (
+    <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '200px' }}>
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+    ) : visibleArticles.length === 0 ? (
+      <div className="text-center my-5">Aucun article trouvé.</div>
     ) : (
       <>
-        {/* Titre avec compteur */}
-        <section className="mb-5 full-height-section">
-          <h2 className="mb-3 pb-2 border-bottom">
-            {`${visibleArticles.length} / ${filteredByFeed.length} articles${selectedFeed ? ` de ${selectedFeed}` : ""}`}
-          </h2>
+        <ul className="list-unstyled">
+          {visibleArticles.map((article) => (
+            <FeedItem key={article.id} article={article} />
+          ))}
+        </ul>
 
-          {/* Si aucun article visible */}
-          {visibleArticles.length === 0 ? (
-            <p className="no-articles-text">Aucun article trouvé</p>
-          ) : (
-            <div className="row g-4">
-              {visibleArticles.map(article => (
-                <div key={article.id} className="col-12 col-md-4 col-lg-3">
-                  <FeedItem article={article} />
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Boutons charger plus / tout charger */}
         {visibleArticles.length < sortedArticles.length && (
-          <div className="buttons-container">
-            <button
-              onClick={handleLoadMore}
-              className="btn-outline-primary custom-load-more"
-            >
-              Charger 10 articles de plus
-            </button>
-
-            <button
-              onClick={handleLoadAll}
-              className="btn-primary custom-load-all"
-            >
-              Charger tous les articles
+          <div className="text-center my-4">
+            <button className="btn btn-primary px-4 py-2" onClick={loadMore}>
+              Voir plus
             </button>
           </div>
         )}
-
-        {/* Bouton flèche pour remonter en haut */}
-        {showScrollButton && (
-          <button
-            onClick={scrollToTop}
-            aria-label="Remonter en haut"
-            className="scroll-to-top-btn"
-          >
-            ↑
-          </button>
-        )}
       </>
     )}
-  </div>
-  </div>
+
+    {/* Flèche retour en haut */}
+    <button
+      className="scroll-to-top-btn position-fixed bottom-0 end-0 m-4 shadow d-none"
+      id="scrollToTop"
+      style={{ zIndex: 9999 }}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
+      ↑
+    </button>
   </div>
 );
 }
