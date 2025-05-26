@@ -1,0 +1,273 @@
+/* Animation du dégradé */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Fond animé dégradé violet → bleu marine → noir */
+body, html, #root {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  background: linear-gradient(
+    270deg,
+    #5B2C6F,   /* violet profond */
+    #001f3f,   /* bleu marine */
+    #4B0082    /* indigo */
+  );
+  background-size: 600% 600%;
+  animation: gradientAnimation 15s ease infinite;
+
+  color: #f5deb3; /* couleur texte dorée */
+}
+
+/* Conteneur principal - case qui englobe tout le projet */
+main.bg-white {
+  background-color: rgba(28, 22, 0, 0.5); /* brun foncé transparent */
+  backdrop-filter: blur(8px); /* effet verre dépoli */
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(191, 162, 74, 0.3); /* ombre douce dorée */
+  padding: 2rem;
+  color: #f5deb3; /* texte doré */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Folder selector */
+.folder-selector {
+  background-color: rgba(255, 223, 93, 0.15); /* doré très clair transparent */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(191, 162, 74, 0.7) transparent;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  transition: scrollbar-color 0.3s ease;
+  padding: 0 1rem;
+  border-radius: 10px;
+  color: #bfa24a; /* doré foncé */
+}
+
+.folder-selector:hover {
+  scrollbar-color: rgba(191, 162, 74, 0.9) transparent;
+}
+
+.folder-selector::-webkit-scrollbar {
+  height: 6px;
+  transition: all 0.3s ease;
+}
+
+.folder-selector::-webkit-scrollbar-thumb {
+  background: rgba(191, 162, 74, 0.7);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.folder-selector:hover::-webkit-scrollbar-thumb {
+  background: rgba(191, 162, 74, 0.9);
+}
+
+/* Header léger */
+header {
+  background-color: transparent;
+  padding: 0.5rem 1rem;
+  color: #bfa24a; /* doré */
+  font-weight: 700;
+}
+
+header h1 {
+  color: #bfa24a;
+  margin: 0;
+  font-weight: 700;
+}
+
+header img {
+  border: 4px solid #bfa24a;
+  box-shadow: 0 4px 8px rgba(191, 162, 74, 0.3);
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Cards */
+.card {
+  background-color: rgba(255, 223, 93, 0.15); /* doré clair transparent */
+  box-shadow: 0 3px 8px rgba(191, 162, 74, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow-x: hidden;
+  outline: none;
+  color: #bfa24a;
+}
+
+.card:focus-visible {
+  outline: 2px solid #bfa24a;
+  outline-offset: 4px;
+}
+
+/* Article images */
+.article-content img {
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  display: block;
+  object-fit: contain;
+}
+
+/* Article text */
+.article-content p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  color: #d4c373; /* doré pâle pour texte */
+}
+
+/* Footer */
+footer {
+  color: #bfa24a;
+  margin-top: 3rem;
+  font-size: 0.875rem;
+}
+
+/* Spinner */
+.spinner {
+  border: 4px solid rgba(191, 162, 74, 0.1);
+  border-left-color: #bfa24a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+/* Scrollbar for sections */
+section::-webkit-scrollbar {
+  height: 6px;
+}
+section::-webkit-scrollbar-track {
+  background: rgba(191, 162, 74, 0.1);
+}
+section::-webkit-scrollbar-thumb {
+  background-color: #bfa24a;
+  border-radius: 3px;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Reset autres fonds */
+main, section, header, footer {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Case filtre personnalisé */
+.custom-feed-filter-card {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+  border: 1px solid #bfa24a;
+  color: #bfa24a;
+  font-size: 0.9rem;
+}
+
+/* ———————————— */
+/* AMÉLIORATIONS POUR LES CARDS ARTICLES */
+/* ———————————— */
+
+/* Fond plus opaque et plus foncé pour meilleure lisibilité */
+.card {
+  background-color: rgba(191, 162, 74, 0.12) !important; /* doré clair un peu plus opaque */
+  box-shadow: 0 6px 15px rgba(191, 162, 74, 0.25) !important; /* ombre dorée plus marquée */
+  border: 1px solid rgba(191, 162, 74, 0.3);
+  color: #f5deb3 !important; /* texte doré clair plus lisible */
+  transition: 
+    background-color 0.3s ease, 
+    box-shadow 0.3s ease, 
+    transform 0.3s ease;
+}
+
+/* Hover et focus plus visible */
+.card:hover, 
+.card:focus-visible {
+  background-color: rgba(91, 151, 241, 0.18) !important;
+  box-shadow: 0 12px 30px rgba(11, 36, 125, 0.4) !important;
+  transform: translateY(-4px);
+  outline: none;
+}
+
+/* Titres dans les cards */
+.card h5, .card h6 {
+  color: #ffffff !important;
+}
+
+/* Paragraphes dorés plus clairs et lisibles */
+.card p, .article-content p {
+  color: #ffffff;
+}
+
+/* Liens dorés prononcés avec effet hover */
+.card a {
+  color: #70d2ff;
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.card a:hover {
+  color: #fff1b8;
+}
+
+.custom-read-switch .form-check-label {
+  padding-right: 0.5rem; /* Ajuste ici selon ton besoin */
+}
+.feed-item-card {
+  padding: 16px; /* 🌟 Marge interne tout autour */
+  border-radius: 8px; /* Facultatif : coins arrondis pour l’esthétique */
+  background-color: #1f1f1f; /* Ton fond par défaut */
+  color: #fff; /* Pour que le texte ressorte bien */
+}
+
+.feed-item-card.read {
+  background-color: #1f1f1f; /* fond plus foncé */
+  border: 4px solid #9fe29c; /* bordure complète colorée */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
