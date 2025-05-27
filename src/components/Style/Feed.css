@@ -205,3 +205,44 @@ h2.mb-3.pb-2.border-bottom {
   border-radius: 9999px;
   will-change: width;
 }
+
+
+.article-content {
+  font-size: 20px !important;
+  line-height: 1.5;
+  color: #333;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  font-size: 20px !important; /* même taille que le texte normal */
+  font-weight: normal !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Par défaut, bouton avec taille standard */
+.btn-primary {
+  min-width: 100px;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Sur mobile (max 576px), bouton plein largeur */
+@media (max-width: 576px) {
+  .btn-primary {
+    width: 100%;
+    min-width: auto;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  /* Pour que le conteneur autour du bouton ne force pas la taille */
+  .d-flex > div > button.btn-primary {
+    flex-grow: 1;
+  }
+}
+

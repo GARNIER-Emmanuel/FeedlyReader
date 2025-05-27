@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FeedItem from "./FeedItem";
 import SearchBar from "../tools/SearchBar";
 import ReadingTimeFilter from "../tools/ReadingTimeFilter";
@@ -15,7 +15,6 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed }) {
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
   const [selectedFeed, setSelectedFeed] = useState(""); // feed sélectionné dans le dossier
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [lastLoadKey, setLastLoadKey] = useState(0);
 
   // Recharger les articles quand feeds ou selectedFeed changent
@@ -170,12 +169,10 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed }) {
   <div className="feed-container container-fluid px-3">
     <div className="filter-bar mb-4 d-flex flex-column flex-md-row flex-wrap gap-3 align-items-stretch">
       <div className="flex-fill">
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <SearchBar value={searchTerm} onChange={setSearchTerm} />
       </div>
       <div className="flex-fill">
-        <ReadingTimeFilter
-          filterReadingTime={filterReadingTime}
-          setFilterReadingTime={setFilterReadingTime}
+         <ReadingTimeFilter value={filterReadingTime} onChange={setFilterReadingTime} 
         />
       </div>
       <div className="flex-fill">

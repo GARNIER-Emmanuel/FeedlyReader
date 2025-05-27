@@ -328,9 +328,9 @@ img {
 
 .filter-bar input[type="text"]:focus {
   outline: none;
-  background-color: #ffffffa9;
+  background-color: #3b3b5c;
   box-shadow: 0 0 5px #3b82f6;
-  color: #e0e0ff;
+  color: #ffffff;
 }
 
 /* Selecteurs (dropdown) */

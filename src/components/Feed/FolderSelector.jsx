@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function FolderSelector({ folders, selected, onChange }) {
   const navigate = useNavigate();
+
+  // refs pour chaque folder, indexé par le nom du folder
+  const folderRefs = useRef({});
+
+  useEffect(() => {
+    if (selected && folderRefs.current[selected]) {
+      folderRefs.current[selected].scrollIntoView({
+        behavior: "smooth",
+        inline: "center", // pour centrer horizontalement
+        block: "nearest", // verticalement sans forcer le scroll vertical
+      });
+    }
+  }, [selected]);
 
   return (
     <nav
@@ -19,30 +32,12 @@ export default function FolderSelector({ folders, selected, onChange }) {
         paddingRight: "0",
       }}
     >
-      {/* Bouton + en premier */}
-      <button
-        onClick={() => navigate("/add-folder")}
-        className="btn btn-sm btn-outline-primary fw-semibold"
-        aria-label="Ajouter un nouveau dossier"
-        title="Ajouter un nouveau dossier"
-        style={{
-          flex: "0 0 auto",
-          borderRadius: "1rem",
-          padding: "0.3rem 1rem",
-          whiteSpace: "nowrap",
-          userSelect: "none",
-          boxShadow: "0 1px 3px rgba(0,123,255,0.3)",
-          transition: "background-color 0.3s ease",
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(0,123,255,0.1)")}
-        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-      >
-        Gérer
-      </button>
+      
 
       {folders.map((folder) => (
         <button
           key={folder}
+          ref={(el) => (folderRefs.current[folder] = el)} // assignation ref
           onClick={() => onChange(folder)}
           className={`btn btn-sm ${
             selected === folder ? "btn-primary" : "btn-outline-primary"
