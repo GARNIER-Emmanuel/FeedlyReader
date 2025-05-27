@@ -58,49 +58,43 @@ export default function App() {
 
   return (
     <Router>
-      <div
-        className="min-vh-100"
-        style={{
-          color: "#f5f5f5",
-          minHeight: "100vh",
-        }}
-      >
+      <div className="min-vh-100" style={{ color: "#f5f5f5", minHeight: "100vh" }}>
         <div className="container-fluid py-4">
-          <header
-            className="mb-2 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
-            style={{ gap: "1rem" }}
-          >
-            <div>
-              <h1 className="display-5 fw-bold text-primary mb-2">Feedly Reader</h1>
-            </div>
 
-            <img
-              src={logo}
-              alt="Feedly Reader Logo"
-              style={{
-                height: "80px",
-                width: "80px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                border: "3px solid #3b82f6",
-              }}
-            />
-          </header>
+          {/* ✅ HEADER CENTRÉ ET LIMITÉ EN LARGEUR */}
+          <div style={{ maxWidth: "98%", margin: "0 auto", padding: "0 1rem" }}>
+            <header
+              className="mb-2 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
+              style={{ gap: "1rem" }}
+            >
+              <div>
+                <h1 className="display-5 fw-bold text-primary mb-2">Feedly Reader</h1>
+              </div>
 
+              <img
+                src={logo}
+                alt="Feedly Reader Logo"
+                style={{
+                  height: "80px",
+                  width: "80px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  border: "3px solid #3b82f6",
+                }}
+              />
+            </header>
+                  <p className="text-secondary fs-6 text-center text-md-start mb-3">
+                    Choisis une catégorie pour afficher les flux RSS associés.
+                  </p>
+
+          </div>
 
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  <p
-                    className="text-secondary fs-5 mx-auto mx-md-0"
-                    style={{ maxWidth: "600px" }}
-                  >
-                    Choisis une catégorie pour afficher les flux RSS associés.
-                  </p>
-
                   <section
                     className="mb-0 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start folder-selector"
                     style={{ overflowX: "auto", whiteSpace: "nowrap" }}

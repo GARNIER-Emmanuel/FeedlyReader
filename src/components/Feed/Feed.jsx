@@ -206,6 +206,23 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed }) {
       <div className="text-center my-5">Aucun article trouvé.</div>
     ) : (
       <>
+        <div className="feed-progress-wrapper">
+        <div className="feed-progress-bar">
+          <div
+            className="feed-progress-fill"
+            style={{
+              width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
+            }}
+          ></div>
+        </div>
+        <div className="feed-progress-label">
+          {selectedFeed
+            ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
+            : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
+        </div>
+      </div>
+
+
         <ul className="list-unstyled">
           {visibleArticles.map((article) => (
             <FeedItem key={article.id} article={article} />
@@ -219,6 +236,23 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed }) {
             </button>
           </div>
         )}
+
+        <div className="feed-progress-wrapper">
+        <div className="feed-progress-bar">
+          <div
+            className="feed-progress-fill"
+            style={{
+              width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
+            }}
+          ></div>
+        </div>
+        <div className="feed-progress-label">
+          {selectedFeed
+            ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
+            : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
+        </div>
+      </div>
+
       </>
     )}
 

@@ -1,3 +1,5 @@
+
+
 /* Animation du dégradé */
 @keyframes gradientAnimation {
   0% {
@@ -52,7 +54,7 @@ main.bg-white {
 .folder-selector {
   background-color: rgba(255, 223, 93, 0.15); /* doré très clair transparent */
   scrollbar-width: thin;
-  scrollbar-color: rgba(191, 162, 74, 0.7) transparent;
+  scrollbar-color: #3b82f6 transparent;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   transition: scrollbar-color 0.3s ease;
@@ -62,7 +64,7 @@ main.bg-white {
 }
 
 .folder-selector:hover {
-  scrollbar-color: rgba(191, 162, 74, 0.9) transparent;
+  scrollbar-color: rgba(14, 25, 168, 0.9) transparent;
 }
 
 .folder-selector::-webkit-scrollbar {
