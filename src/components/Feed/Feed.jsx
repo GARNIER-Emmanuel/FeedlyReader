@@ -1,22 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FeedItem from "./FeedItem";
 import SearchBar from "../tools/SearchBar";
 import ReadingTimeFilter from "../tools/ReadingTimeFilter";
 import SortOrderSelector from "../tools/SortOrderSelector";
 import FeedSelector from "../tools/FeedSelector";
+import '../Style/Feed.css';
 
-export default function Feed({ feeds }) {
+export default function Feed({ feeds, selectedFolder, onDeleteFeed }) {
   const [allArticles, setAllArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterReadingTime, setFilterReadingTime] = useState("all");
-  const [sortBy, setSortBy] = useState("popularity");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortBy, setSortBy] = useState("date");
+  const [sortOrder, setSortOrder] = useState("desc");
   const [loading, setLoading] = useState(false);
   const [visibleCount, setVisibleCount] = useState(10);
-  const [selectedFeed, setSelectedFeed] = useState("");
+  const [selectedFeed, setSelectedFeed] = useState(""); // feed sélectionné dans le dossier
+  const [lastLoadKey, setLastLoadKey] = useState(0);
 
-  // Nouvel état pour gérer l’affichage de la flèche
-  const [showScrollButton, setShowScrollButton] = useState(false);
+  // Recharger les articles quand feeds ou selectedFeed changent
+  useEffect(() => {
+    setSelectedFeed(""); // reset sélection feed quand dossier change
+  }, [feeds]);
 
   useEffect(() => {
     const fetchFeeds = async () => {
@@ -33,30 +37,45 @@ export default function Feed({ feeds }) {
           const data = await res.json();
           const parser = new DOMParser();
           const xml = parser.parseFromString(data.contents, "text/xml");
-          const items = [...xml.querySelectorAll("item")].map((item, index) => {
-            const title = item.querySelector("title")?.textContent || "";
-            const summary = item.querySelector("description")?.textContent || "";
-            const pubDate = item.querySelector("pubDate")?.textContent || "";
-            const wordCount = (title + " " + summary).trim().split(/\s+/).length;
-            const readingTime = Math.max(1, Math.round(wordCount / 200));
-            const popularity = Math.floor(Math.random() * 1000);
-            return {
-              id: `${feed.name}-${index}`,
-              title,
-              summary,
-              url: item.querySelector("link")?.textContent || "#",
-              readingTime,
-              popularity,
-              source: feed.name,
-              pubDate: pubDate ? new Date(pubDate) : null,
-            };
-          });
+          const items = await Promise.all(
+            [...xml.querySelectorAll("item")].map(async (item, index) => {
+              const title = item.querySelector("title")?.textContent || "";
+              const summary = item.querySelector("description")?.textContent || "";
+              const pubDate = item.querySelector("pubDate")?.textContent || "";
+              let readingTime = 1;
+              try {
+                const extractUrl = `http://localhost:5001/extract?url=${encodeURIComponent(item.querySelector("link")?.textContent || "")}`;
+                const extractRes = await fetch(extractUrl);
+                const extractData = await extractRes.json();
+                const articleText = extractData.content || "";
+                const wordCount = articleText.trim().split(/\s+/).length;
+                readingTime = Math.max(1, Math.round(wordCount / 200));
+              } catch (e) {
+                console.warn("Erreur extraction contenu complet, fallback résumé :", e);
+                const fallbackCount = (title + " " + summary).trim().split(/\s+/).length;
+                readingTime = Math.max(1, Math.round(fallbackCount / 200));
+              }
+
+              const popularity = Math.floor(Math.random() * 1000);
+              return {
+                id: `${feed.name}-${index}`,
+                title,
+                summary,
+                url: item.querySelector("link")?.textContent || "#",
+                readingTime,
+                popularity,
+                source: feed.name,
+                pubDate: pubDate ? new Date(pubDate) : null,
+              };
+            })
+          );
           return items;
         });
 
         const allFeedsItems = await Promise.all(feedPromises);
         setAllArticles(allFeedsItems.flat());
         setVisibleCount(10);
+        setLastLoadKey(prev => prev + 1); 
       } catch (error) {
         console.error("Erreur lors du chargement des feeds", error);
       } finally {
@@ -72,28 +91,31 @@ export default function Feed({ feeds }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [selectedFeed, searchTerm, filterReadingTime]);
 
-  // useEffect pour écouter le scroll et afficher/cacher la flèche
+
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 100) {
-        setShowScrollButton(true);
-      } else {
-        setShowScrollButton(false);
+      const button = document.getElementById("scrollToTop");
+      if (button) {
+        if (window.scrollY > 100) {
+          button.classList.remove("d-none");
+        } else {
+          button.classList.add("d-none");
+        }
       }
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const filteredBySearch = allArticles.filter((article) => {
+ 
+  // Filtres en chaîne
+  const filteredBySearch = allArticles.filter(article => {
     const term = searchTerm.toLowerCase();
-    return (
-      article.title.toLowerCase().includes(term) ||
-      article.summary.toLowerCase().includes(term)
-    );
+    return article.title.toLowerCase().includes(term) || article.summary.toLowerCase().includes(term);
   });
 
-  const filteredByReadingTime = filteredBySearch.filter((article) => {
+  const filteredByReadingTime = filteredBySearch.filter(article => {
     switch (filterReadingTime) {
       case "5":
         return article.readingTime <= 5;
@@ -112,206 +134,134 @@ export default function Feed({ feeds }) {
     ? filteredByReadingTime.filter(article => article.source === selectedFeed)
     : filteredByReadingTime;
 
+  // Tri
   const sortedArticles = [...filteredByFeed].sort((a, b) => {
     if (sortBy === "popularity") {
-      return sortOrder === "asc"
-        ? a.popularity - b.popularity
-        : b.popularity - a.popularity;
-    } else if (sortBy === "date") {
-      // Trier par date (du plus récent au plus ancien, ou inverse)
-      if (!a.pubDate) return 1;  // articles sans date à la fin
-      if (!b.pubDate) return -1;
-      return sortOrder === "asc"
-        ? a.pubDate - b.pubDate
-        : b.pubDate - a.pubDate;
-    } else {
-      return sortOrder === "asc"
-        ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
+      return sortOrder === "asc" ? a.popularity - b.popularity : b.popularity - a.popularity;
     }
+    if (sortBy === "date") {
+      return sortOrder === "asc"
+        ? (a.pubDate?.getTime() || 0) - (b.pubDate?.getTime() || 0)
+        : (b.pubDate?.getTime() || 0) - (a.pubDate?.getTime() || 0);
+    }
+    return 0;
   });
 
+  
   const visibleArticles = sortedArticles.slice(0, visibleCount);
 
-  const handleLoadMore = () => {
-    setVisibleCount((prev) => Math.min(prev + 10, sortedArticles.length));
+  const loadMore = () => {
+    setVisibleCount((count) => count + 10);
   };
 
-  const handleLoadAll = () => {
-    setVisibleCount(sortedArticles.length);
-  };
+  useEffect(() => {
+    if (!loading) {
+      const audio = new Audio(
+        visibleArticles.length > 0 ? '/audio/ding.mp3' : '/audio/wrongding.mp3'
+      );
+      audio.play().catch(console.warn);
+    }
+  }, [lastLoadKey]);
 
-  // Fonction pour remonter en haut
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
+  
   return (
-    <div className="container my-4">
-   {/* Filtres */}
-    <div
-      className="card p-3 mb-4"
-      style={{ backgroundColor: "#e0f2fe", borderColor: "#bae6fd" }}
-    >
-      <div className="row g-3 align-items-center">
-        <div className="col-md">
-          <SearchBar value={searchTerm} onChange={setSearchTerm} />
-        </div>
-        <div className="col-md">
-          <ReadingTimeFilter value={filterReadingTime} onChange={setFilterReadingTime} />
-        </div>
-        <div className="col-md">
-          <SortOrderSelector
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-          />
-        </div>
-        <div className="col-md">
-          <FeedSelector
-            feeds={feeds}
-            selectedFeed={selectedFeed}
-            setSelectedFeed={setSelectedFeed}
-          />
-        </div>
+  <div className="feed-container container-fluid px-3">
+    <div className="filter-bar mb-4 d-flex flex-column flex-md-row flex-wrap gap-3 align-items-stretch">
+      <div className="flex-fill">
+        <SearchBar value={searchTerm} onChange={setSearchTerm} />
+      </div>
+      <div className="flex-fill">
+         <ReadingTimeFilter value={filterReadingTime} onChange={setFilterReadingTime} 
+        />
+      </div>
+      <div className="flex-fill">
+        <SortOrderSelector
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          setSortBy={setSortBy}
+          setSortOrder={setSortOrder}
+        />
+      </div>
+      <div className="flex-fill">
+        <FeedSelector
+          feeds={feeds}
+          selectedFeed={selectedFeed}
+          setSelectedFeed={setSelectedFeed}
+          onDeleteFeed={onDeleteFeed}
+        />
       </div>
     </div>
 
-
-      {/* Affichage loader pendant chargement */}
-      {loading ? (
-        <div
-          className="spinner"
-          aria-label="Chargement en cours"
-          style={{
-            border: "4px solid rgba(0, 0, 0, 0.1)",
-            borderLeftColor: "#0284c7",
-            borderRadius: "50%",
-            width: "40px",
-            height: "40px",
-            animation: "spin 1s linear infinite",
-            margin: "2rem auto",
-          }}
-        />
-      ) : (
-        <>
-        {/* Titre avec compteur */}
-        <section className="mb-5">
-          <h2
-            className="mb-3 pb-2 border-bottom"
-            style={{ color: "#0369a1", borderColor: "#bae6fd", fontWeight: "700" }}
-          >
-           {`${visibleArticles.length} / ${filteredByFeed.length} articles${selectedFeed ? ` de ${selectedFeed}` : ""}`}
-          </h2>
-
-          {/* Si aucun article visible */}
-          {visibleArticles.length === 0 ? (
-            <p style={{ fontStyle: "italic", color: "#888" }}>Aucun article trouvé</p>
-          ) : (
-            <div className="row g-4">
-              {visibleArticles.map(article => (
-                <div key={article.id} className="col-12 col-md-6 col-lg-4">
-                  <FeedItem article={article} />
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-
-          {/* Boutons charger plus / tout charger */}
-          {visibleArticles.length < sortedArticles.length && (
-            <div
-              className="d-flex justify-content-center gap-3 mt-5"
-              style={{ gap: "1rem" }}
-            >
-              <button
-                onClick={handleLoadMore}
-                className="btn btn-outline-primary rounded-pill px-4 py-2"
-                style={{
-                  backgroundColor: "#7dd3fc",
-                  borderColor: "#7dd3fc",
-                  color: "#0c4a6e",
-                  fontWeight: "600",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#38bdf8";
-                  e.target.style.borderColor = "#38bdf8";
-                  e.target.style.color = "white";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#7dd3fc";
-                  e.target.style.borderColor = "#7dd3fc";
-                  e.target.style.color = "#0c4a6e";
-                }}
-              >
-                Charger 10 articles de plus
-              </button>
-
-              <button
-                onClick={handleLoadAll}
-                className="btn btn-primary rounded-pill px-4 py-2"
-                style={{
-                  backgroundColor: "#0284c7",
-                  borderColor: "#0284c7",
-                  color: "white",
-                  fontWeight: "600",
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = "#0369a1";
-                  e.target.style.borderColor = "#0369a1";
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = "#0284c7";
-                  e.target.style.borderColor = "#0284c7";
-                }}
-              >
-                Charger tous les articles
-              </button>
-            </div>
-          )}
-
-          {/* Bouton flèche pour remonter en haut, affiché seulement quand showScrollButton = true */}
-          {showScrollButton && (
-            <button
-              onClick={scrollToTop}
-              aria-label="Remonter en haut"
-              style={{
-                position: "fixed",
-                bottom: "2rem",
-                right: "2rem",
-                backgroundColor: "#0284c7",
-                border: "none",
-                borderRadius: "50%",
-                width: "3rem",
-                height: "3rem",
-                color: "white",
-                fontSize: "1.2rem",
-                cursor: "pointer",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-                zIndex: 1000,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onMouseEnter={(e) => (e.target.style.backgroundColor = "#0369a1")}
-              onMouseLeave={(e) => (e.target.style.backgroundColor = "#0284c7")}
-            >
-              ↑
-            </button>
-          )}
-        </>
-      )}
-
-      {/* Animation CSS clé spin */}
-      <style>{`
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
+   {loading ? (
+    <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '200px' }}>
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Chargement...</span>
+      </div>
     </div>
-  );
+    ) : visibleArticles.length === 0 ? (
+      <div className="text-center my-5">Aucun article trouvé.</div>
+    ) : (
+      <>
+        <div className="feed-progress-wrapper">
+        <div className="feed-progress-bar">
+          <div
+            className="feed-progress-fill"
+            style={{
+              width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
+            }}
+          ></div>
+        </div>
+        <div className="feed-progress-label">
+          {selectedFeed
+            ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
+            : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
+        </div>
+      </div>
+
+
+        <ul className="list-unstyled">
+          {visibleArticles.map((article) => (
+            <FeedItem key={article.id} article={article} />
+          ))}
+        </ul>
+
+        {visibleArticles.length < sortedArticles.length && (
+          <div className="text-center my-4">
+            <button className="btn btn-primary px-4 py-2" onClick={loadMore}>
+              Voir plus
+            </button>
+          </div>
+        )}
+
+        <div className="feed-progress-wrapper">
+        <div className="feed-progress-bar">
+          <div
+            className="feed-progress-fill"
+            style={{
+              width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
+            }}
+          ></div>
+        </div>
+        <div className="feed-progress-label">
+          {selectedFeed
+            ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
+            : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
+        </div>
+      </div>
+
+      </>
+    )}
+
+    {/* Flèche retour en haut */}
+    <button
+      className="scroll-to-top-btn position-fixed bottom-0 end-0 m-4 shadow d-none"
+      id="scrollToTop"
+      style={{ zIndex: 9999 }}
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    >
+      ↑
+    </button>
+  </div>
+);
 }

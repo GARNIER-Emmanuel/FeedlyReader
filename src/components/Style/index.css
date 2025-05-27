@@ -1,0 +1,393 @@
+
+
+/* Animation du dégradé */
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.full-width {
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+
+/* Fond animé dégradé violet → bleu marine → noir */
+body, html, #root {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  background: linear-gradient(
+    270deg,
+    #5B2C6F,   /* violet profond */
+    #001f3f,   /* bleu marine */
+    #4B0082    /* indigo */
+  );
+  background-size: 600% 600%;
+  animation: gradientAnimation 90s ease infinite;
+
+  color: #f5deb3; /* couleur texte dorée */
+}
+
+/* Conteneur principal - case qui englobe tout le projet */
+main.bg-white {
+  background-color: rgba(28, 22, 0, 0.5); /* brun foncé transparent */
+  backdrop-filter: blur(8px); /* effet verre dépoli */
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(191, 162, 74, 0.3); /* ombre douce dorée */
+  padding: 2rem;
+  color: #f5deb3; /* texte doré */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Folder selector */
+.folder-selector {
+  background-color: rgba(255, 223, 93, 0.15); /* doré très clair transparent */
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 transparent;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  transition: scrollbar-color 0.3s ease;
+  padding: 0 1rem;
+  border-radius: 10px;
+  color: #bfa24a; /* doré foncé */
+}
+
+.folder-selector:hover {
+  scrollbar-color: rgba(14, 25, 168, 0.9) transparent;
+}
+
+.folder-selector::-webkit-scrollbar {
+  height: 6px;
+  transition: all 0.3s ease;
+}
+
+.folder-selector::-webkit-scrollbar-thumb {
+  background: rgba(191, 162, 74, 0.7);
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+
+.folder-selector:hover::-webkit-scrollbar-thumb {
+  background: rgba(191, 162, 74, 0.9);
+}
+
+/* Header léger */
+header {
+  background-color: transparent;
+  padding: 0.5rem 1rem;
+  color: #bfa24a; /* doré */
+  font-weight: 700;
+}
+
+header h1 {
+  color: #bfa24a;
+  margin: 0;
+  font-weight: 700;
+}
+
+header img {
+  border: 4px solid #bfa24a;
+  box-shadow: 0 4px 8px rgba(191, 162, 74, 0.3);
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Cards */
+.card {
+  background-color: rgba(255, 223, 93, 0.15); /* doré clair transparent */
+  box-shadow: 0 3px 8px rgba(191, 162, 74, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  border-radius: 10px;
+  overflow-x: hidden;
+  outline: none;
+  color: #bfa24a;
+}
+
+.card:focus-visible {
+  outline: 2px solid #bfa24a;
+  outline-offset: 4px;
+}
+
+/* Article images */
+.article-content img {
+  max-width: 100%;
+  max-height: 200px;
+  width: auto;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  display: block;
+  object-fit: contain;
+}
+
+/* Article text */
+.article-content p {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  color: #d4c373; /* doré pâle pour texte */
+}
+
+/* Footer */
+footer {
+  color: #bfa24a;
+  margin-top: 3rem;
+  font-size: 0.875rem;
+}
+
+/* Spinner */
+.spinner {
+  border: 4px solid rgba(191, 162, 74, 0.1);
+  border-left-color: #bfa24a;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+/* Scrollbar for sections */
+section::-webkit-scrollbar {
+  height: 6px;
+}
+section::-webkit-scrollbar-track {
+  background: rgba(191, 162, 74, 0.1);
+}
+section::-webkit-scrollbar-thumb {
+  background-color: #bfa24a;
+  border-radius: 3px;
+}
+
+/* Animations */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+/* Reset autres fonds */
+main, section, header, footer {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* Images */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Case filtre personnalisé */
+.custom-feed-filter-card {
+  background-color: rgba(255, 255, 255, 0.15);
+  box-shadow: none;
+  border: 1px solid #bfa24a;
+  color: #bfa24a;
+  font-size: 0.9rem;
+}
+
+/* ———————————— */
+/* AMÉLIORATIONS POUR LES CARDS ARTICLES */
+/* ———————————— */
+
+/* Fond plus opaque et plus foncé pour meilleure lisibilité */
+.card {
+  background-color: rgba(191, 162, 74, 0.12) !important; /* doré clair un peu plus opaque */
+  box-shadow: 0 6px 15px rgba(191, 162, 74, 0.25) !important; /* ombre dorée plus marquée */
+  border: 1px solid rgba(191, 162, 74, 0.3);
+  color: #f5deb3 !important; /* texte doré clair plus lisible */
+  transition: 
+    background-color 0.3s ease, 
+    box-shadow 0.3s ease, 
+    transform 0.3s ease;
+}
+
+/* Hover et focus plus visible */
+.card:hover, 
+.card:focus-visible {
+  background-color: rgba(91, 151, 241, 0.18) !important;
+  box-shadow: 0 12px 30px rgba(11, 36, 125, 0.4) !important;
+  transform: translateY(-4px);
+  outline: none;
+}
+
+/* Titres dans les cards */
+.card h5, .card h6 {
+  color: #ffffff !important;
+}
+
+/* Paragraphes dorés plus clairs et lisibles */
+.card p, .article-content p {
+  color: #adbcd3;
+}
+
+/* Liens dorés prononcés avec effet hover */
+.card a {
+  color: #70d2ff;
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.card a:hover {
+  color: #2a66e7;
+}
+
+.custom-read-switch .form-check-label {
+  padding-right: 0.5rem; /* Ajuste ici selon ton besoin */
+}
+.feed-item-card {
+  padding: 16px; /* 🌟 Marge interne tout autour */
+  border-radius: 8px; /* Facultatif : coins arrondis pour l’esthétique */
+  background-color: #1f1f1f; /* Ton fond par défaut */
+  color: #fff; /* Pour que le texte ressorte bien */
+}
+
+.feed-item-card.read {
+  background-color: #1f1f1f; /* fond plus foncé */
+  border: 4px solid #9fe29c; /* bordure complète colorée */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mention{
+  color: #ffffff;
+}
+
+/* Container filtre général */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Plus de retour à la ligne, tout reste sur une ligne */
+  gap: 1rem; /* Espace entre les filtres */
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+}
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;  /* par défaut, les filtres peuvent passer à la ligne */
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+  overflow-x: visible;
+  padding: 0.5rem 0;
+}
+
+@media (min-width: 992px) { /* écran large : bootstrap lg */
+  .filter-bar {
+    flex-wrap: nowrap; /* tout sur une ligne */
+    overflow-x: auto;
+  }
+}
+
+
+/* Input de recherche */
+.filter-bar input[type="text"] {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #ffffffa9;
+  color: #000000;
+  font-size: 1rem;
+  min-width: 250px;
+  transition: background-color 0.3s ease;
+}
+
+.filter-bar input[type="text"]:focus {
+  outline: none;
+  background-color: #3b3b5c;
+  box-shadow: 0 0 5px #3b82f6;
+  color: #ffffff;
+}
+
+/* Selecteurs (dropdown) */
+.filter-bar select {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #ffffffa9;
+  color: #000000;
+  font-size: 1rem;
+  min-width: 150px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.filter-bar select:hover {
+  background-color: #a4a4b4;
+}
+
+.filter-bar select:focus {
+  outline: none;
+  background-color: #3b3b5c;
+  box-shadow: 0 0 5px #3b82f6;
+  color: #e0e0ff;
+}
+
+/* Boutons dans la barre de filtres */
+.filter-bar button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.6);
+}
+
+.filter-bar button:hover {
+  background-color: #2563eb;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.8);
+}
+
+/* Responsive: réduire la taille des filtres sur petits écrans */
+@media (max-width: 576px) {
+  .filter-bar {
+    justify-content: center;
+  }
+
+  .filter-bar input[type="text"],
+  .filter-bar select {
+    min-width: 100%;
+    max-width: 300px;
+  }
+
+  .filter-bar button {
+    width: 100%;
+  }
+}
