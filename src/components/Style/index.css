@@ -29,12 +29,12 @@ body, html, #root {
 
   background: linear-gradient(
     270deg,
-    #5B2C6F,   /* violet profond */
-    #001f3f,   /* bleu marine */
-    #4B0082    /* indigo */
+    #000000,   /* violet profond */
+    #192e68,   /* bleu marine */
+    #000000    /* indigo */
   );
   background-size: 600% 600%;
-  animation: gradientAnimation 90s ease infinite;
+  animation: gradientAnimation 50s ease infinite;
 
   color: #f5deb3; /* couleur texte dorée */
 }
