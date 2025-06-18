@@ -1,6 +1,8 @@
 import React from "react";
 
-export default function FeedSelector({ feeds, selectedFeed, setSelectedFeed }) {
+export default function FeedSelector({ feeds, selectedFeed, setSelectedFeed, selectedFolder }) {
+  const folderFeeds = feeds.filter(feed => feed.folder === selectedFolder);
+
   return (
     <select
       value={selectedFeed}
@@ -8,8 +10,8 @@ export default function FeedSelector({ feeds, selectedFeed, setSelectedFeed }) {
       className="form-select form-select-sm"
       style={{ minWidth: "180px" }}
     >
-      <option value="">Tous les feeds</option>
-      {feeds.map((feed) => (
+      <option value="">Tous le dossier{selectedFolder}</option>
+      {folderFeeds.map((feed) => (
         <option key={feed.name} value={feed.name}>
           {feed.name}
         </option>

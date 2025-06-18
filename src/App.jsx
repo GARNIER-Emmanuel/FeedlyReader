@@ -10,7 +10,7 @@ export default function App() {
   const savedFeedsByFolder = JSON.parse(localStorage.getItem("feedsByFolder"));
   const [feedsByFolder, setFeedsByFolder] = useState(savedFeedsByFolder || { ...initialFeedsByFolder });
   const [folders, setFolders] = useState(Object.keys(feedsByFolder));
-  const [selectedFolder, setSelectedFolder] = useState(Object.keys(feedsByFolder)[0]);
+  const [selectedFolder, setSelectedFolder] = useState(Object.keys(feedsByFolder)[0] || "");
 
   // Sauvegarder dans localStorage à chaque modif
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function App() {
     }
   };
 
-  // Supprimer un feed
+  // Supprimer un feed dans un dossier
   const deleteFeedFromFolder = (folderName, feedUrl) => {
     setFeedsByFolder((prev) => {
       const updatedFolder = prev[folderName].filter((feed) => feed !== feedUrl);
@@ -58,47 +58,47 @@ export default function App() {
 
   return (
     <Router>
-      <div
-        className="min-vh-100 bg-light"
-        style={{ background: "linear-gradient(to right, #eff6ff, #e0e7ff)" }}
-      >
-        <div className="container py-5">
-          <header
-            className="mb-5 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
-            style={{ gap: "1rem" }}
-          >
-            <div>
-              <h1 className="display-4 fw-bold text-primary mb-3">Feedly Reader</h1>
-            </div>
-            <img
-              src={logo}
-              alt="Feedly Reader Logo"
-              style={{
-                height: "100px",
-                width: "100px",
-                borderRadius: "50%",
-                objectFit: "cover",
-                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-                border: "4px solid #3b82f6",
-              }}
-            />
-          </header>
+      <div className="min-vh-100" style={{ color: "#f5f5f5", minHeight: "100vh" }}>
+        <div className="container-fluid py-4">
 
-        
+          {/* ✅ HEADER CENTRÉ ET LIMITÉ EN LARGEUR */}
+          <div style={{ maxWidth: "98%", margin: "0 auto", padding: "0 1rem" }}>
+            <header
+              className="mb-2 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
+              style={{ gap: "1rem" }}
+            >
+              <div>
+                <h1 className="display-5 fw-bold text-primary mb-2">Feedly Reader</h1>
+              </div>
+
+              <img
+                src={logo}
+                alt="Feedly Reader Logo"
+                style={{
+                  height: "80px",
+                  width: "80px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  border: "3px solid #3b82f6",
+                }}
+              />
+            </header>
+                  <p className="text-secondary fs-6 text-center text-md-start mb-3">
+                    Choisis une catégorie pour afficher les flux RSS associés.
+                  </p>
+
+          </div>
 
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  <p
-                    className="text-secondary fs-5 mx-auto mx-md-0"
-                    style={{ maxWidth: "600px" }}
+                  <section
+                    className="mb-0 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start folder-selector"
+                    style={{ overflowX: "auto", whiteSpace: "nowrap" }}
                   >
-                    Choisis une catégorie pour afficher les flux RSS associés.
-                  </p>
-
-                  <section className="mb-4 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
                     <FolderSelector
                       folders={folders}
                       selected={selectedFolder}
@@ -108,21 +108,20 @@ export default function App() {
                     />
                   </section>
 
-                  <main className="bg-white rounded-4 shadow p-4">
+                  {/* Ici on place le Feed, en lui passant les feeds du dossier sélectionné */}
+                  <main className="full-width" style={{ padding: "0 1rem" }}>
                     <Feed
-                      feeds={feedsByFolder[selectedFolder]}
+                      feeds={feedsByFolder[selectedFolder] || []}
+                      selectedFolder={selectedFolder}
                       onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
                     />
                   </main>
                 </>
               }
             />
-
-            {/* Pas de route pour ManageFeeds ici */}
-
           </Routes>
 
-          <footer className="mt-5 text-center text-muted small">
+          <footer className="mention mt-5 text-center small">
             &copy; 2025 Manu — Feedly Reader
           </footer>
         </div>
