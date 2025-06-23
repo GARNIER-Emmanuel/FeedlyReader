@@ -27,12 +27,14 @@ body, html, #root {
   width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 
-  background: linear-gradient(
-    270deg,
-    #000000,   /* violet profond */
-    #192e68,   /* bleu marine */
-    #000000    /* indigo */
-  );
+background: linear-gradient(
+  270deg,
+  #2a1a4f,
+  #3b2c60,
+  #2a1a4f
+);
+
+
   background-size: 600% 600%;
   animation: gradientAnimation 50s ease infinite;
 
