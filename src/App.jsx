@@ -4,7 +4,9 @@ import { feedsByFolder as initialFeedsByFolder } from "./components/data/baseFee
 import Feed from "./components/features/feed/components/FeedList";
 import FolderSelector from "./components/features/feed/components/FolderSelector";
 import NewsCarousel from "./components/features/feed/components/NewsCarousel";
-import logo from "./assets/logo.png";
+import FeedManager from "./components/features/feed/components/FeedManager";
+import Header from "./components/layout/Header";
+import Footer from "./components/layout/Footer";
 
 export default function App() {
   // Charger depuis localStorage ou initial
@@ -13,6 +15,7 @@ export default function App() {
   const [folders, setFolders] = useState(Object.keys(feedsByFolder));
   const [selectedFolder, setSelectedFolder] = useState(Object.keys(feedsByFolder)[0] || "");
   const [showRandomArticle, setShowRandomArticle] = useState(false);
+  const [isRandomLoading, setIsRandomLoading] = useState(false);
   
   // Référence pour la section des thèmes
   const themesSectionRef = useRef(null);
@@ -40,15 +43,17 @@ export default function App() {
     setTimeout(scrollToThemes, 100);
   };
 
-  // Fonction pour l'article aléatoire avec scroll
+  // Fonction pour l'article aléatoire avec animation de chargement
   const handleRandomArticle = () => {
+    setIsRandomLoading(true);
     setShowRandomArticle(true);
-    // Sélectionner un dossier aléatoire
-    const allFolders = Object.keys(feedsByFolder);
-    const randomFolder = allFolders[Math.floor(Math.random() * allFolders.length)];
-    setSelectedFolder(randomFolder);
-    // Scroll vers les thèmes
-    setTimeout(scrollToThemes, 100);
+    
+    // Simuler un temps de chargement pour l'animation
+    setTimeout(() => {
+      setIsRandomLoading(false);
+      // Scroll vers les thèmes
+      setTimeout(scrollToThemes, 100);
+    }, 1500); // 1.5 secondes d'animation
   };
 
   // Supprimer un dossier
@@ -77,7 +82,14 @@ export default function App() {
   // Supprimer un feed dans un dossier
   const deleteFeedFromFolder = (folderName, feedUrl) => {
     setFeedsByFolder((prev) => {
-      const updatedFolder = prev[folderName].filter((feed) => feed !== feedUrl);
+      const updatedFolder = prev[folderName].filter((feed) => {
+        // Si feed est un objet, comparer l'URL
+        if (typeof feed === 'object' && feed.url) {
+          return feed.url !== feedUrl;
+        }
+        // Si feed est une string (URL), comparer directement
+        return feed !== feedUrl;
+      });
       return { ...prev, [folderName]: updatedFolder };
     });
   };
@@ -93,39 +105,17 @@ export default function App() {
   useEffect(() => {
     if (showRandomArticle) {
       setShowRandomArticle(false);
+      setIsRandomLoading(false);
     }
   }, [selectedFolder]);
 
   return (
     <Router>
       <div className="min-vh-100" style={{ color: "#f5f5f5", minHeight: "100vh" }}>
-        <div className="container-fluid py-4">
-
-          {/* ✅ HEADER CENTRÉ ET LIMITÉ EN LARGEUR */}
-          <div style={{ maxWidth: "98%", margin: "0 auto", padding: "0 1rem" }}>
-            <header
-              className="mb-2 text-center text-md-start d-flex align-items-center justify-content-center justify-content-md-between"
-              style={{ gap: "1rem" }}
-            >
-              <div>
-                <h1 className="display-5 fw-bold text-primary mb-2">Feedly Reader</h1>
-              </div>
-
-              <img
-                src={logo}
-                alt="Feedly Reader Logo"
-                style={{
-                  height: "80px",
-                  width: "80px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  border: "3px solid #3b82f6",
-                }}
-              />
-            </header>
-          </div>
-
+        {/* Nouveau Header */}
+        <Header />
+        
+        <div className="container-fluid py-1">
           <Routes>
             <Route
               path="/"
@@ -137,38 +127,76 @@ export default function App() {
                   {/* Section des thèmes avec référence */}
                   <section
                     ref={themesSectionRef}
-                    className="mb-0 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start folder-selector"
-                    style={{ overflowX: "auto", whiteSpace: "nowrap" }}
+                    className="mb-0 d-flex justify-content-between align-items-center folder-selector"
+                    style={{ overflowX: "auto", whiteSpace: "nowrap", marginBottom: "-1rem" }}
                   >
-                    <FolderSelector
-                      folders={folders}
-                      selected={selectedFolder}
-                      onChange={handleFolderChange}
-                      onDeleteFolder={deleteFolder}
-                      onRenameFolder={renameFolder}
-                      onRandomArticle={handleRandomArticle}
-                    />
+                    <div className="d-flex flex-wrap gap-3 align-items-center">
+                      <FolderSelector
+                        folders={folders}
+                        selected={selectedFolder}
+                        onChange={handleFolderChange}
+                        onDeleteFolder={deleteFolder}
+                        onRenameFolder={renameFolder}
+                        onRandomArticle={handleRandomArticle}
+                      />
+                    </div>
+                    <button 
+                      className="btn btn-sm refresh-button"
+                      onClick={() => {
+                        // Vider tous les caches
+                        Object.values(feedsByFolder).flat().forEach(feed => {
+                          const feedName = typeof feed === 'string' ? new URL(feed).hostname.replace('www.', '') : feed.name;
+                          const feedUrl = typeof feed === 'string' ? feed : feed.url;
+                          const cacheKey = `${feedName}-${feedUrl}`;
+                          localStorage.removeItem(`feed-cache-${cacheKey}`);
+                        });
+                        // Forcer le rechargement
+                        window.location.reload();
+                      }}
+                      title="Forcer le rafraîchissement de tous les feeds"
+                    >
+                      <span className="refresh-icon">🔄</span>
+                      <span className="refresh-text">Actualiser</span>
+                    </button>
                   </section>
 
                   {/* Ici on place le Feed, en lui passant les feeds du dossier sélectionné */}
                   <main className="full-width" style={{ padding: "0 1rem" }}>
                     <Feed
-                      feeds={feedsByFolder[selectedFolder] || []}
+                      feeds={showRandomArticle ? Object.values(feedsByFolder).flat() : feedsByFolder[selectedFolder] || []}
                       selectedFolder={selectedFolder}
                       onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
                       showRandomArticle={showRandomArticle}
+                      isRandomLoading={isRandomLoading}
                       onFilterChange={scrollToThemes}
                     />
                   </main>
                 </>
               }
             />
+            <Route
+              path="/feeds"
+              element={
+                <FeedManager 
+                  feedsByFolder={feedsByFolder}
+                  setFeedsByFolder={setFeedsByFolder}
+                  onFeedsUpdate={(newFeeds) => {
+                    setFeedsByFolder(newFeeds);
+                    localStorage.setItem("feedsByFolder", JSON.stringify(newFeeds));
+                    setFolders(Object.keys(newFeeds));
+                    // Réinitialiser la sélection si le dossier actuel n'existe plus
+                    if (!newFeeds[selectedFolder]) {
+                      setSelectedFolder(Object.keys(newFeeds)[0] || "");
+                    }
+                  }}
+                />
+              }
+            />
           </Routes>
-
-          <footer className="mention mt-5 text-center small">
-            &copy; 2025 Manu — Feedly Reader
-          </footer>
         </div>
+        
+        {/* Nouveau Footer */}
+        <Footer />
       </div>
     </Router>
   );

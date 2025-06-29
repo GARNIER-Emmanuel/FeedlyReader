@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './NewsCarousel.css';
+import '../../styles/NewsCarousel.css';
 
 const NewsCarousel = ({ feeds = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);

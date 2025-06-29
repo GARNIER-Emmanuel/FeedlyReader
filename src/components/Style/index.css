@@ -11,12 +11,29 @@
   }
 }
 
+/* Empêcher le défilement horizontal tout en permettant le défilement vertical naturel */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Règle globale pour empêcher le débordement horizontal */
+* {
+  box-sizing: border-box;
+}
+
+.container, .container-fluid, .row, .col, [class*="col-"] {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
 .full-width {
   width: 100%;
   padding-left: 1rem;
   padding-right: 1rem;
+  box-sizing: border-box;
 }
-
 
 /* Fond animé dégradé violet → bleu marine → noir */
 body, html, #root {
@@ -24,6 +41,8 @@ body, html, #root {
   height: 100%;
   width: 100%;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
 
 background: linear-gradient(
   270deg,
@@ -48,6 +67,9 @@ main.bg-white {
   padding: 2rem;
   color: #f5deb3; /* texte doré */
   transition: background-color 0.3s ease, color 0.3s ease;
+  overflow-x: hidden;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* Folder selector */
@@ -80,29 +102,6 @@ main.bg-white {
 
 .folder-selector:hover::-webkit-scrollbar-thumb {
   background: rgba(191, 162, 74, 0.9);
-}
-
-/* Header léger */
-header {
-  background-color: transparent;
-  padding: 0.5rem 1rem;
-  color: #bfa24a; /* doré */
-  font-weight: 700;
-}
-
-header h1 {
-  color: #bfa24a;
-  margin: 0;
-  font-weight: 700;
-}
-
-header img {
-  border: 4px solid #bfa24a;
-  box-shadow: 0 4px 8px rgba(191, 162, 74, 0.3);
-  height: 100px;
-  width: 100px;
-  border-radius: 50%;
-  object-fit: cover;
 }
 
 /* Cards */
@@ -194,12 +193,10 @@ section::-webkit-scrollbar-thumb {
 }
 
 /* Reset autres fonds */
-main, section, header, footer {
+main, section, footer {
   background: transparent !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  margin: 0;
-  padding: 0;
 }
 
 /* Images */

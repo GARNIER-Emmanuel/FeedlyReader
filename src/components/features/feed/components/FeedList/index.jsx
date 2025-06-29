@@ -6,7 +6,7 @@ import SortOrderSelector from "../../../filters/components/SortOrderSelector";
 import FeedSelector from "../../../filters/components/FeedSelector";
 import "../../styles/Feed.css";
 
-export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomArticle = false, onFilterChange }) {
+export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomArticle = false, isRandomLoading = false, onFilterChange }) {
   const [allArticles, setAllArticles] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterReadingTime, setFilterReadingTime] = useState("all");
@@ -51,6 +51,11 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
 
   // Fonction pour gérer le changement de feed sélectionné avec scroll
   const handleFeedChange = (newSelectedFeed) => {
+    console.log('=== CHANGEMENT DE FEED ===');
+    console.log('Ancien selectedFeed:', selectedFeed);
+    console.log('Nouveau selectedFeed:', newSelectedFeed);
+    console.log('Feeds disponibles:', feeds);
+    
     setSelectedFeed(newSelectedFeed);
     if (onFilterChange) {
       setTimeout(onFilterChange, 100);
@@ -58,7 +63,39 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
   };
 
   // Fonction pour obtenir la clé de cache d'un feed
-  const getCacheKey = (feed) => `${feed.name}-${feed.url}`;
+  const getCacheKey = (feed) => {
+    // Les feeds sont déjà des objets avec name et url
+    const feedName = feed.name;
+    const feedUrl = feed.url;
+    return `${feedName}-${feedUrl}`;
+  };
+
+  // Fonction pour créer un objet feed à partir d'une URL (pour compatibilité)
+  const createFeedObject = (feed) => {
+    // Si c'est déjà un objet avec name et url, l'utiliser tel quel
+    if (typeof feed === 'object' && feed.name && feed.url) {
+      return feed;
+    }
+    
+    // Si c'est une string (URL), créer un objet
+    if (typeof feed === 'string') {
+      try {
+        const url = new URL(feed);
+        const hostname = url.hostname.replace('www.', '');
+        return {
+          name: hostname,
+          url: feed
+        };
+      } catch (error) {
+        console.warn('URL invalide dans createFeedObject:', feed);
+        return {
+          name: feed,
+          url: feed
+        };
+      }
+    }
+    return feed;
+  };
 
   // Fonction pour vérifier si le cache est valide (15 minutes)
   const isCacheValid = (timestamp) => {
@@ -75,10 +112,27 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
     const fetchFeeds = async () => {
       setLoading(true);
       try {
+        // Convertir les feeds en objets si nécessaire
+        const feedObjects = feeds.map(createFeedObject);
+        
+        // Debug: afficher les feeds pour diagnostiquer
+        console.log('FeedList - feeds reçus:', feeds);
+        console.log('FeedList - feedObjects créés:', feedObjects);
+        console.log('FeedList - selectedFeed:', selectedFeed);
+        
         // Si un feed est sélectionné, ne charger que celui-là
         const feedsToLoad = selectedFeed
-          ? feeds.filter(feed => feed.name === selectedFeed)
-          : feeds;
+          ? feedObjects.filter(feed => {
+              console.log('Comparaison feed:', {
+                feedName: feed.name,
+                selectedFeed: selectedFeed,
+                match: feed.name === selectedFeed
+              });
+              return feed.name === selectedFeed;
+            })
+          : feedObjects;
+        
+        console.log('FeedList - feedsToLoad:', feedsToLoad);
 
         const feedPromises = feedsToLoad.map(async (feed) => {
           try {
@@ -163,6 +217,20 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
                   const readingTime = calculateReadingTime(title + " " + summary);
 
               const popularity = Math.floor(Math.random() * 1000);
+                  
+                  // Créer une date valide
+                  let validPubDate = null;
+                  if (pubDate) {
+                    try {
+                      const parsedDate = new Date(pubDate);
+                      if (!isNaN(parsedDate.getTime())) {
+                        validPubDate = parsedDate;
+                      }
+                    } catch (dateError) {
+                      console.warn(`Date invalide pour ${feed.name}:`, pubDate);
+                    }
+                  }
+                  
                   const article = {
                 id: `${feed.name}-${index}`,
                 title,
@@ -172,7 +240,7 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
                 readingTime,
                 popularity,
                 source: feed.name,
-                pubDate: pubDate ? new Date(pubDate) : null,
+                pubDate: validPubDate,
               };
 
                   return article;
@@ -233,9 +301,8 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [selectedFeed, searchTerm, filterReadingTime]);
 
-
   useEffect(() => {
-    const handleScroll = () => {
+    const handleScrollToTopButton = () => {
       const button = document.getElementById("scrollToTop");
       if (button) {
         if (window.scrollY > 100) {
@@ -246,8 +313,13 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Utiliser un délai pour éviter les conflits avec d'autres écouteurs de scroll
+    const debouncedHandleScroll = () => {
+      setTimeout(handleScrollToTopButton, 10);
+    };
+
+    window.addEventListener("scroll", debouncedHandleScroll);
+    return () => window.removeEventListener("scroll", debouncedHandleScroll);
   }, []);
 
  
@@ -272,9 +344,18 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
     }
   });
 
-  const filteredByFeed = selectedFeed
-    ? filteredByReadingTime.filter(article => article.source === selectedFeed)
-    : filteredByReadingTime;
+  // Pas besoin de filtrer par feed car on charge déjà seulement le feed sélectionné
+  const filteredByFeed = filteredByReadingTime;
+
+  // Debug: afficher les statistiques de filtrage
+  console.log('=== DEBUG FILTRAGE ===');
+  console.log('allArticles:', allArticles.length);
+  console.log('filteredBySearch:', filteredBySearch.length);
+  console.log('filteredByReadingTime:', filteredByReadingTime.length);
+  console.log('filteredByFeed:', filteredByFeed.length);
+  console.log('selectedFeed:', selectedFeed);
+  console.log('searchTerm:', searchTerm);
+  console.log('filterReadingTime:', filterReadingTime);
 
   // Tri
   const sortedArticles = [...filteredByFeed].sort((a, b) => {
@@ -282,9 +363,11 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
       return sortOrder === "asc" ? a.popularity - b.popularity : b.popularity - a.popularity;
     }
     if (sortBy === "date") {
-      return sortOrder === "asc"
-        ? (a.pubDate?.getTime() || 0) - (b.pubDate?.getTime() || 0)
-        : (b.pubDate?.getTime() || 0) - (a.pubDate?.getTime() || 0);
+      // S'assurer que pubDate est un objet Date valide
+      const dateA = a.pubDate instanceof Date ? a.pubDate.getTime() : 0;
+      const dateB = b.pubDate instanceof Date ? b.pubDate.getTime() : 0;
+      
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
     }
     return 0;
   });
@@ -341,21 +424,7 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
   const cacheStatus = getCacheStatus();
   
   return (
-  <div className="feed-container container-fluid px-3">
-    {/* Bouton de rafraîchissement simple */}
-    <div className="cache-status-bar mb-3">
-      <div className="d-flex justify-content-end">
-        <button 
-          className="btn btn-sm refresh-button"
-          onClick={forceRefresh}
-          title="Forcer le rafraîchissement de tous les feeds"
-        >
-          <span className="refresh-icon">🔄</span>
-          <span className="refresh-text">Actualiser</span>
-        </button>
-      </div>
-    </div>
-
+  <div className="feed-container container-fluid px-3" style={{ minHeight: '600px' }}>
     <div className="filter-bar mb-4 d-flex flex-column flex-md-row flex-wrap gap-3 align-items-stretch">
       <div className="flex-fill">
         <SearchBar value={searchTerm} onChange={handleSearchChange} />
@@ -377,31 +446,38 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
           feeds={feeds}
           selectedFeed={selectedFeed}
           setSelectedFeed={handleFeedChange}
-          onDeleteFeed={onDeleteFeed}
+          selectedFolder={selectedFolder}
         />
       </div>
     </div>
 
    {loading ? (
-    <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '200px' }}>
+    <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '400px' }}>
       <div className="spinner-border text-primary" role="status">
         <span className="visually-hidden">Chargement...</span>
       </div>
     </div>
+    ) : showRandomArticle && isRandomLoading ? (
+      <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '400px' }}>
+        <div className="text-center">
+          <div className="spinner-border text-success mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+            <span className="visually-hidden">Sélection d'un article aléatoire...</span>
+          </div>
+          <h4 className="text-success">🎲 Sélection d'un article aléatoire...</h4>
+          <p className="text-muted">Nous cherchons le meilleur article pour vous !</p>
+        </div>
+      </div>
     ) : visibleArticles.length === 0 ? (
-      <div className="text-center my-5">Aucun article trouvé.</div>
+      <div className="text-center my-5" style={{ minHeight: '200px' }}>Aucun article trouvé.</div>
     ) : (
       <>
         {/* Affichage de l'article aléatoire */}
-        {randomArticle && (
-          <div className="mb-4">
-            <div className="text-center mb-3">
+        {randomArticle && showRandomArticle && !isRandomLoading && (
+          <div className="mb-1">
+            <div className="text-center mb-1">
               <h3 className="text-success">
                 🎲 Article Aléatoire Sélectionné
               </h3>
-              <p className="text-muted">
-                Découvrez cet article choisi au hasard pour vous !
-              </p>
             </div>
             <div className="row justify-content-center">
               <div className="col-12 col-lg-8">
@@ -410,58 +486,45 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
                 </div>
               </div>
             </div>
-            <hr className="my-4" />
           </div>
         )}
 
-        <div className="feed-progress-wrapper">
-        <div className="feed-progress-bar">
-          <div
-            className="feed-progress-fill"
-            style={{
-              width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
-            }}
-          ></div>
-        </div>
-        <div className="feed-progress-label">
-          {selectedFeed
-            ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
-            : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
-        </div>
-      </div>
-
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-          {visibleArticles.map((article) => (
-            <div key={article.id} className="col">
-              <FeedItem article={article} />
+        {/* Afficher les articles normaux seulement si pas en mode article aléatoire */}
+        {!showRandomArticle && (
+          <>
+            <div className="feed-progress-wrapper">
+            <div className="feed-progress-bar">
+              <div
+                className="feed-progress-fill"
+                style={{
+                  width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
+                }}
+              ></div>
             </div>
-          ))}
-        </div>
-
-        {visibleArticles.length < sortedArticles.length && (
-          <div className="text-center my-4">
-            <button className="btn btn-primary px-4 py-2" onClick={loadMore}>
-              Voir plus
-            </button>
+            <div className="feed-progress-label">
+              {selectedFeed
+                ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
+                : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
+            </div>
           </div>
+
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+              {visibleArticles.map((article) => (
+                <div key={article.id} className="col">
+                  <FeedItem article={article} />
+                </div>
+              ))}
+            </div>
+
+            {visibleArticles.length < sortedArticles.length && (
+              <div className="text-center my-4">
+                <button className="btn btn-primary px-4 py-2" onClick={loadMore}>
+                  Voir plus
+                </button>
+              </div>
+            )}
+          </>
         )}
-
-        <div className="feed-progress-wrapper">
-        <div className="feed-progress-bar">
-          <div
-            className="feed-progress-fill"
-            style={{
-              width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
-            }}
-          ></div>
-        </div>
-        <div className="feed-progress-label">
-          {selectedFeed
-            ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
-            : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
-        </div>
-      </div>
-
       </>
     )}
 
