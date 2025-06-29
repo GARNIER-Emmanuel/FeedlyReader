@@ -424,119 +424,118 @@ export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomAr
   const cacheStatus = getCacheStatus();
   
   return (
-  <div className="feed-container container-fluid px-3" style={{ minHeight: '600px' }}>
-    <div className="filter-bar mb-4 d-flex flex-column flex-md-row flex-wrap gap-3 align-items-stretch">
-      <div className="flex-fill">
-        <SearchBar value={searchTerm} onChange={handleSearchChange} />
-      </div>
-      <div className="flex-fill">
-         <ReadingTimeFilter value={filterReadingTime} onChange={handleReadingTimeChange} 
-        />
-      </div>
-      <div className="flex-fill">
-        <SortOrderSelector
-          sortBy={sortBy}
-          sortOrder={sortOrder}
-          setSortBy={(newSortBy) => handleSortChange(newSortBy, sortOrder)}
-          setSortOrder={(newSortOrder) => handleSortChange(sortBy, newSortOrder)}
-        />
-      </div>
-      <div className="flex-fill">
-        <FeedSelector
-          feeds={feeds}
-          selectedFeed={selectedFeed}
-          setSelectedFeed={handleFeedChange}
-          selectedFolder={selectedFolder}
-        />
-      </div>
-    </div>
-
-   {loading ? (
-    <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '400px' }}>
-      <div className="spinner-border text-primary" role="status">
-        <span className="visually-hidden">Chargement...</span>
-      </div>
-    </div>
-    ) : showRandomArticle && isRandomLoading ? (
-      <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '400px' }}>
-        <div className="text-center">
-          <div className="spinner-border text-success mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
-            <span className="visually-hidden">Sélection d'un article aléatoire...</span>
-          </div>
-          <h4 className="text-success">🎲 Sélection d'un article aléatoire...</h4>
-          <p className="text-muted">Nous cherchons le meilleur article pour vous !</p>
+    <div className="feed-container container-fluid px-0" style={{ minHeight: '600px' }}>
+      <div className="filter-bar mb-4 d-flex flex-column flex-md-row flex-wrap gap-3 align-items-stretch">
+        <div className="flex-fill">
+          <SearchBar value={searchTerm} onChange={handleSearchChange} />
+        </div>
+        <div className="flex-fill">
+          <ReadingTimeFilter value={filterReadingTime} onChange={handleReadingTimeChange} />
+        </div>
+        <div className="flex-fill">
+          <SortOrderSelector
+            sortBy={sortBy}
+            sortOrder={sortOrder}
+            setSortBy={(newSortBy) => handleSortChange(newSortBy, sortOrder)}
+            setSortOrder={(newSortOrder) => handleSortChange(sortBy, newSortOrder)}
+          />
+        </div>
+        <div className="flex-fill">
+          <FeedSelector
+            feeds={feeds}
+            selectedFeed={selectedFeed}
+            setSelectedFeed={handleFeedChange}
+            selectedFolder={selectedFolder}
+          />
         </div>
       </div>
-    ) : visibleArticles.length === 0 ? (
-      <div className="text-center my-5" style={{ minHeight: '200px' }}>Aucun article trouvé.</div>
-    ) : (
-      <>
-        {/* Affichage de l'article aléatoire */}
-        {randomArticle && showRandomArticle && !isRandomLoading && (
-          <div className="mb-1">
-            <div className="text-center mb-1">
-              <h3 className="text-success">
-                🎲 Article Aléatoire Sélectionné
-              </h3>
+
+     {loading ? (
+      <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '400px' }}>
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Chargement...</span>
+        </div>
+      </div>
+      ) : showRandomArticle && isRandomLoading ? (
+        <div className="d-flex justify-content-center align-items-center my-5" style={{ minHeight: '400px' }}>
+          <div className="text-center">
+            <div className="spinner-border text-success mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
+              <span className="visually-hidden">Sélection d'un article aléatoire...</span>
             </div>
-            <div className="row justify-content-center">
-              <div className="col-12 col-lg-8">
-                <div className="random-article-highlight">
-                  <FeedItem article={randomArticle} />
+            <h4 className="text-success">🎲 Sélection d'un article aléatoire...</h4>
+            <p className="text-muted">Nous cherchons le meilleur article pour vous !</p>
+          </div>
+        </div>
+      ) : visibleArticles.length === 0 ? (
+        <div className="text-center my-5" style={{ minHeight: '200px' }}>Aucun article trouvé.</div>
+      ) : (
+        <>
+          {/* Affichage de l'article aléatoire */}
+          {randomArticle && showRandomArticle && !isRandomLoading && (
+            <div className="mb-1">
+              <div className="text-center mb-1">
+                <h3 className="text-success">
+                  🎲 Article Aléatoire Sélectionné
+                </h3>
+              </div>
+              <div className="row justify-content-center">
+                <div className="col-12 col-lg-8">
+                  <div className="random-article-highlight">
+                    <FeedItem article={randomArticle} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Afficher les articles normaux seulement si pas en mode article aléatoire */}
-        {!showRandomArticle && (
-          <>
-            <div className="feed-progress-wrapper">
-            <div className="feed-progress-bar">
-              <div
-                className="feed-progress-fill"
-                style={{
-                  width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
-                }}
-              ></div>
-            </div>
-            <div className="feed-progress-label">
-              {selectedFeed
-                ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
-                : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
-            </div>
-          </div>
-
-            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
-              {visibleArticles.map((article) => (
-                <div key={article.id} className="col">
-                  <FeedItem article={article} />
-                </div>
-              ))}
-            </div>
-
-            {visibleArticles.length < sortedArticles.length && (
-              <div className="text-center my-4">
-                <button className="btn btn-primary px-4 py-2" onClick={loadMore}>
-                  Voir plus
-                </button>
+          {/* Afficher les articles normaux seulement si pas en mode article aléatoire */}
+          {!showRandomArticle && (
+            <>
+              <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+                {visibleArticles.map((article) => (
+                  <div key={article.id} className="col">
+                    <FeedItem article={article} />
+                  </div>
+                ))}
               </div>
-            )}
-          </>
-        )}
-      </>
-    )}
 
-    {/* Flèche retour en haut */}
-    <button
-      className="scroll-to-top-btn position-fixed bottom-0 end-0 m-4 shadow d-none"
-      id="scrollToTop"
-      style={{ zIndex: 9999 }}
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-    >
-      ↑
-    </button>
-  </div>
-);
+              <div className="feed-progress-wrapper">
+              <div className="feed-progress-bar">
+                <div
+                  className="feed-progress-fill"
+                  style={{
+                    width: `${(visibleArticles.length / filteredByFeed.length) * 100}%`,
+                  }}
+                ></div>
+              </div>
+              <div className="feed-progress-label">
+                {selectedFeed
+                  ? `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFeed}`
+                  : `${visibleArticles.length} sur ${filteredByFeed.length} articles dans ${selectedFolder}`}
+              </div>
+            </div>
+
+              {visibleArticles.length < sortedArticles.length && (
+                <div className="text-center my-4">
+                  <button className="btn btn-primary px-4 py-2" onClick={loadMore}>
+                    Voir plus
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </>
+      )}
+
+      {/* Flèche retour en haut */}
+      <button
+        className="scroll-to-top-btn position-fixed bottom-0 end-0 m-4 shadow d-none"
+        id="scrollToTop"
+        style={{ zIndex: 9999 }}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        ↑
+      </button>
+    </div>
+  );
 }

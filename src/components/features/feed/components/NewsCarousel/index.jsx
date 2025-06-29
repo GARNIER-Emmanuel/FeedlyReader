@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../../styles/NewsCarousel.css';
 
+// --- CACHE EN MÉMOIRE POUR LE CARROUSEL ---
+let carouselCache = {
+  articles: [],
+  timestamp: 0,
+  feedsLength: 0
+};
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+const LOCALSTORAGE_CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+
 const NewsCarousel = ({ feeds = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [articles, setArticles] = useState([]);
@@ -38,8 +47,45 @@ const NewsCarousel = ({ feeds = [] }) => {
     localStorage.setItem(storageKey, newValue.toString());
   };
 
-  // Récupérer les vrais articles des flux RSS
+  // Récupérer les vrais articles des flux RSS avec cache
   useEffect(() => {
+    const now = Date.now();
+    
+    // Vérifier d'abord le cache mémoire
+    if (
+      carouselCache.articles.length > 0 &&
+      now - carouselCache.timestamp < CACHE_DURATION &&
+      feeds.length === carouselCache.feedsLength
+    ) {
+      console.log('Utilisation du cache mémoire carrousel - affichage instantané');
+      setArticles(carouselCache.articles);
+      setLoading(false);
+      return;
+    }
+
+    // Vérifier le cache localStorage
+    try {
+      const cachedData = localStorage.getItem('carousel-cache');
+      if (cachedData) {
+        const parsed = JSON.parse(cachedData);
+        if (
+          parsed.articles.length > 0 &&
+          now - parsed.timestamp < LOCALSTORAGE_CACHE_DURATION &&
+          parsed.feedsLength === feeds.length
+        ) {
+          console.log('Utilisation du cache localStorage carrousel - affichage rapide');
+          setArticles(parsed.articles);
+          setLoading(false);
+          // Mettre à jour le cache mémoire
+          carouselCache = parsed;
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Erreur lors de la lecture du cache localStorage:', error);
+    }
+
+    console.log('Chargement des articles carrousel depuis les feeds');
     const fetchRecentArticles = async () => {
       setLoading(true);
       try {
@@ -49,7 +95,7 @@ const NewsCarousel = ({ feeds = [] }) => {
           return;
         }
 
-        // Récupérer les articles de tous les feeds
+        // Récupérer les articles de tous les feeds (limité à 2 par feed pour plus de rapidité)
         const feedPromises = feeds.map(async (feed) => {
           try {
             const PROXY_URL = `https://api.allorigins.win/get?url=${encodeURIComponent(feed.url)}`;
@@ -64,7 +110,7 @@ const NewsCarousel = ({ feeds = [] }) => {
             const parser = new DOMParser();
             const xml = parser.parseFromString(data.contents, "text/xml");
             
-            const items = [...xml.querySelectorAll("item")].slice(0, 3).map((item, index) => {
+            const items = [...xml.querySelectorAll("item")].slice(0, 2).map((item, index) => {
               const title = item.querySelector("title")?.textContent || "";
               const description = item.querySelector("description")?.textContent || "";
               const link = item.querySelector("link")?.textContent || "";
@@ -148,9 +194,20 @@ const NewsCarousel = ({ feeds = [] }) => {
         const sortedArticles = allArticles
           .filter(article => article.title && article.description)
           .sort((a, b) => b.pubDate - a.pubDate)
-          .slice(0, 8); // Limiter à 8 articles pour le carrousel
+          .slice(0, 6); // Limiter à 6 articles pour le carrousel (au lieu de 8)
         
         setArticles(sortedArticles);
+        
+        // Mettre à jour les caches
+        const cacheData = {
+          articles: sortedArticles,
+          timestamp: Date.now(),
+          feedsLength: feeds.length
+        };
+        
+        carouselCache = cacheData;
+        localStorage.setItem('carousel-cache', JSON.stringify(cacheData));
+        console.log('Caches carrousel mis à jour');
       } catch (error) {
         console.error('Erreur lors du chargement des articles:', error);
         setArticles([]);

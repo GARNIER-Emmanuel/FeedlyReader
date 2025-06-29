@@ -399,6 +399,14 @@ h2.mb-3.pb-2.border-bottom {
 
 /* Responsive pour les cartes */
 @media (max-width: 768px) {
+  .feed-item-card {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
   .feed-item-card .card-title {
     font-size: 1rem;
   }
@@ -410,6 +418,30 @@ h2.mb-3.pb-2.border-bottom {
   .feed-item-card .badge {
     font-size: 0.7rem;
     padding: 0.3rem 0.5rem;
+  }
+  
+  .feed-container {
+    padding: 0 1rem !important;
+    width: calc(100vw - 2rem) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .feed-container .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .feed-container .col {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .feed-container {
+    padding: 0 0.5rem !important;
+    width: calc(100vw - 1rem) !important;
   }
 }
 
@@ -524,6 +556,12 @@ h2.mb-3.pb-2.border-bottom {
   letter-spacing: 0.5px;
 }
 
+/* Conteneur du bouton d'actualisation */
+.refresh-button-container {
+  display: flex !important;
+  margin-bottom: 2.5rem !important;
+}
+
 /* Responsive pour le bouton d'actualisation */
 @media (max-width: 768px) {
   .refresh-button {
@@ -532,11 +570,15 @@ h2.mb-3.pb-2.border-bottom {
   }
   
   .refresh-text {
-    display: none !important;
+    display: inline !important;
   }
   
   .refresh-icon {
     font-size: 0.9rem;
+  }
+  
+  .refresh-button-container {
+    display: flex !important;
   }
 }
 
@@ -556,5 +598,65 @@ h2.mb-3.pb-2.border-bottom {
 .feed-container .row.row-cols-xl-4 {
   overflow: visible;
   max-height: none;
+}
+
+/* Responsive pour les cartes d'articles */
+@media (max-width: 768px) {
+  .feed-container-main {
+    padding: 0 !important;
+  }
+
+  .feed-item-card {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* Styles pour les filtres en version mobile */
+  .filter-bar {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    padding: 1rem !important;
+    background: rgba(191, 162, 74, 0.1);
+    border-radius: 0 !important;
+  }
+
+  .filter-bar > div {
+    width: 100% !important;
+  }
+
+  .filter-bar input,
+  .filter-bar select,
+  .filter-bar button {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-radius: 8px !important;
+  }
+
+  /* Style spécial pour le sélecteur de tri qui contient deux selects */
+  .filter-bar .d-flex.gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .filter-bar .d-flex.gap-2 select {
+    min-width: 0 !important;
+  }
+
+  .filter-bar .d-flex.gap-2 select:first-child {
+    flex: 1;
+  }
+
+  .filter-bar .d-flex.gap-2 select:last-child {
+    width: 80px !important;
+    min-width: 80px !important;
+  }
+}
+
+.feed-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(191, 162, 74, 0.3);
+  border-color: rgba(191, 162, 74, 0.4);
 }
 

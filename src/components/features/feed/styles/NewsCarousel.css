@@ -364,17 +364,7 @@
   }
   
   .carousel-button {
-    width: 45px;
-    height: 45px;
-    font-size: 1.3rem;
-  }
-  
-  .carousel-button-prev {
-    left: 0.5rem;
-  }
-  
-  .carousel-button-next {
-    right: 0.5rem;
+    display: none;
   }
   
   .carousel-indicators {
@@ -515,22 +505,6 @@
     gap: 0.5rem;
     align-items: stretch;
   }
-}
-
-/* Animation d'entrée */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.news-carousel-container {
-  animation: fadeInUp 0.6s ease-out;
 }
 
 /* Amélioration du glissement tactile */

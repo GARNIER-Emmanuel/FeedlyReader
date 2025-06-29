@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { feedsByFolder as initialFeedsByFolder } from '../../../../data/baseFeedsByFolder';
 import './FeedManager.css';
 
@@ -10,6 +10,7 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
   const [newFolderName, setNewFolderName] = useState('');
   const [editingFeed, setEditingFeed] = useState(null);
   const [editingFolder, setEditingFolder] = useState(null);
+  const [editingValues, setEditingValues] = useState({ name: '', url: '' });
 
   // Charger les feeds depuis localStorage ou props externes
   useEffect(() => {
@@ -38,7 +39,6 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
   // Ajouter un nouveau feed
   const addFeed = () => {
     if (!newFeedUrl.trim() || !newFeedName.trim() || !selectedFolder) {
-      alert('Veuillez remplir tous les champs');
       return;
     }
 
@@ -56,9 +56,6 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
     setNewFeedUrl('');
     setNewFeedName('');
     setSelectedFolder('');
-    
-    // Message de confirmation
-    alert('Flux ajouté avec succès !');
   };
 
   // Supprimer un feed
@@ -74,32 +71,45 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
     }
 
     saveFeeds(updatedFeeds);
-    alert('Flux supprimé avec succès !');
   };
 
   // Modifier un feed
   const editFeed = (folderName, oldFeed, newName, newUrl) => {
+    if (!newName.trim() || !newUrl.trim()) {
+      return;
+    }
+
     const updatedFeeds = {
       ...feedsByFolder,
       [folderName]: feedsByFolder[folderName].map(feed => 
-        feed.url === oldFeed.url ? { name: newName, url: newUrl } : feed
+        feed.url === oldFeed.url ? { name: newName.trim(), url: newUrl.trim() } : feed
       )
     };
 
     saveFeeds(updatedFeeds);
     setEditingFeed(null);
-    alert('Flux modifié avec succès !');
+    setEditingValues({ name: '', url: '' });
+  };
+
+  // Commencer l'édition d'un feed
+  const startEditingFeed = (folderName, feed) => {
+    setEditingFeed(`${folderName}-${feed.url}`);
+    setEditingValues({ name: feed.name, url: feed.url });
+  };
+
+  // Annuler l'édition d'un feed
+  const cancelEditingFeed = () => {
+    setEditingFeed(null);
+    setEditingValues({ name: '', url: '' });
   };
 
   // Ajouter un nouveau dossier
   const addFolder = () => {
     if (!newFolderName.trim()) {
-      alert('Veuillez entrer un nom de dossier');
       return;
     }
 
     if (feedsByFolder[newFolderName.trim()]) {
-      alert('Ce dossier existe déjà');
       return;
     }
 
@@ -110,28 +120,22 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
 
     saveFeeds(updatedFeeds);
     setNewFolderName('');
-    alert('Dossier ajouté avec succès !');
   };
 
   // Supprimer un dossier
   const deleteFolder = (folderName) => {
-    if (confirm(`Êtes-vous sûr de vouloir supprimer le dossier "${folderName}" et tous ses flux ?`)) {
-      const updatedFeeds = { ...feedsByFolder };
-      delete updatedFeeds[folderName];
-      saveFeeds(updatedFeeds);
-      alert('Dossier supprimé avec succès !');
-    }
+    const updatedFeeds = { ...feedsByFolder };
+    delete updatedFeeds[folderName];
+    saveFeeds(updatedFeeds);
   };
 
   // Modifier un dossier
   const editFolder = (oldName, newName) => {
     if (!newName.trim()) {
-      alert('Veuillez entrer un nom de dossier');
       return;
     }
 
     if (feedsByFolder[newName.trim()] && newName.trim() !== oldName) {
-      alert('Ce nom de dossier existe déjà');
       return;
     }
 
@@ -143,26 +147,20 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
 
     saveFeeds(updatedFeeds);
     setEditingFolder(null);
-    alert('Dossier modifié avec succès !');
   };
 
   // Réinitialiser aux feeds de base
   const resetToBase = () => {
-    if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les flux aux valeurs par défaut ?')) {
-      saveFeeds({ ...initialFeedsByFolder });
-    }
+    saveFeeds({ ...initialFeedsByFolder });
   };
 
   // Vider tous les caches
   const clearAllCaches = () => {
-    if (confirm('Êtes-vous sûr de vouloir vider tous les caches ?')) {
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('feed-cache-')) {
-          localStorage.removeItem(key);
-        }
-      });
-      alert('Tous les caches ont été vidés');
-    }
+    Object.keys(localStorage).forEach(key => {
+      if (key.startsWith('feed-cache-')) {
+        localStorage.removeItem(key);
+      }
+    });
   };
 
   return (
@@ -325,27 +323,29 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
                             <input
                               type="text"
                               className="form-control me-2"
-                              defaultValue={feed.name}
+                              value={editingValues.name}
+                              onChange={(e) => setEditingValues(prev => ({ ...prev, name: e.target.value }))}
                               onKeyPress={(e) => {
                                 if (e.key === 'Enter') {
-                                  editFeed(folderName, feed, e.target.value, document.querySelector(`input[defaultValue="${feed.url}"]`).value);
+                                  editFeed(folderName, feed, editingValues.name, editingValues.url);
                                 }
                               }}
                             />
                             <input
                               type="url"
                               className="form-control me-2"
-                              defaultValue={feed.url}
+                              value={editingValues.url}
+                              onChange={(e) => setEditingValues(prev => ({ ...prev, url: e.target.value }))}
                             />
                             <button 
                               className="btn btn-sm btn-success me-1"
-                              onClick={() => editFeed(folderName, feed, document.querySelector(`input[defaultValue="${feed.name}"]`).value, document.querySelector(`input[defaultValue="${feed.url}"]`).value)}
+                              onClick={() => editFeed(folderName, feed, editingValues.name, editingValues.url)}
                             >
                               ✓
                             </button>
                             <button 
                               className="btn btn-sm btn-secondary"
-                              onClick={() => setEditingFeed(null)}
+                              onClick={cancelEditingFeed}
                             >
                               ✕
                             </button>
@@ -360,7 +360,7 @@ const FeedManager = ({ feedsByFolder: externalFeedsByFolder, setFeedsByFolder: s
                             <div>
                               <button 
                                 className="btn btn-sm btn-outline-primary me-1"
-                                onClick={() => setEditingFeed(`${folderName}-${feed.url}`)}
+                                onClick={() => startEditingFeed(folderName, feed)}
                               >
                                 ✏️
                               </button>

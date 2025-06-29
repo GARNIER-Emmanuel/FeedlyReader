@@ -5,6 +5,7 @@ import Feed from "./components/features/feed/components/FeedList";
 import FolderSelector from "./components/features/feed/components/FolderSelector";
 import NewsCarousel from "./components/features/feed/components/NewsCarousel";
 import FeedManager from "./components/features/feed/components/FeedManager";
+import About from "./components/features/about/About";
 import Header from "./components/layout/Header";
 import Footer from "./components/layout/Footer";
 
@@ -127,19 +128,25 @@ export default function App() {
                   {/* Section des thèmes avec référence */}
                   <section
                     ref={themesSectionRef}
-                    className="mb-0 d-flex justify-content-between align-items-center folder-selector"
+                    className="mb-0 folder-selector"
                     style={{ overflowX: "auto", whiteSpace: "nowrap", marginBottom: "-1rem" }}
                   >
                     <div className="d-flex flex-wrap gap-3 align-items-center">
-                      <FolderSelector
-                        folders={folders}
-                        selected={selectedFolder}
-                        onChange={handleFolderChange}
-                        onDeleteFolder={deleteFolder}
-                        onRenameFolder={renameFolder}
-                        onRandomArticle={handleRandomArticle}
-                      />
+                      <div className="d-flex flex-wrap gap-3 align-items-center">
+                        <FolderSelector
+                          folders={folders}
+                          selected={selectedFolder}
+                          onChange={handleFolderChange}
+                          onDeleteFolder={deleteFolder}
+                          onRenameFolder={renameFolder}
+                          onRandomArticle={handleRandomArticle}
+                        />
+                      </div>
                     </div>
+                  </section>
+
+                  {/* Bouton Actualiser séparé pour mobile */}
+                  <div className="refresh-button-container d-flex justify-content-center mt-2">
                     <button 
                       className="btn btn-sm refresh-button"
                       onClick={() => {
@@ -158,10 +165,10 @@ export default function App() {
                       <span className="refresh-icon">🔄</span>
                       <span className="refresh-text">Actualiser</span>
                     </button>
-                  </section>
+                  </div>
 
                   {/* Ici on place le Feed, en lui passant les feeds du dossier sélectionné */}
-                  <main className="full-width" style={{ padding: "0 1rem" }}>
+                  <main className="full-width feed-container-main" style={{ padding: "0 1rem" }}>
                     <Feed
                       feeds={showRandomArticle ? Object.values(feedsByFolder).flat() : feedsByFolder[selectedFolder] || []}
                       selectedFolder={selectedFolder}
@@ -190,6 +197,12 @@ export default function App() {
                     }
                   }}
                 />
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <About />
               }
             />
           </Routes>

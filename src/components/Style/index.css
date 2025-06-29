@@ -15,6 +15,14 @@
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Masquer les scrollbars WebKit */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
 }
 
 /* Règle globale pour empêcher le débordement horizontal */
@@ -156,18 +164,6 @@ footer {
   height: 40px;
   animation: spin 1s linear infinite;
   margin: 2rem auto;
-}
-
-/* Scrollbar for sections */
-section::-webkit-scrollbar {
-  height: 6px;
-}
-section::-webkit-scrollbar-track {
-  background: rgba(191, 162, 74, 0.1);
-}
-section::-webkit-scrollbar-thumb {
-  background-color: #bfa24a;
-  border-radius: 3px;
 }
 
 /* Animations */
