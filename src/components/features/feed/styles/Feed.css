@@ -140,19 +140,33 @@ h2.mb-3.pb-2.border-bottom {
   justify-content: flex-start;
 }
 
+/* Styles pour les composants Feed */
 
+/* Container principal */
 .feed-container {
   overflow-x: hidden;
 }
 
+/* Barre de filtres */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+}
+
 .filter-bar > div {
-  min-width: 0; /* Permet aux enfants flex de rétrécir */
+  min-width: 0;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap; /* si tu veux couper les textes longs */
+  white-space: nowrap;
 }
 
+/* Barre de progression */
 .feed-progress-wrapper {
   margin: 2rem 0;
   width: 100%;
@@ -162,20 +176,20 @@ h2.mb-3.pb-2.border-bottom {
 }
 
 .feed-progress-bar {
-  height: 0.5rem; /* plus fine qu'avant (1rem -> 0.5rem) */
+  height: 0.5rem;
   border-radius: 9999px;
-  background-color: #e0f2fe; /* fond clair */
+  background-color: #e0f2fe;
   overflow: hidden;
   position: relative;
-  box-shadow: inset 0 0 5px rgba(2, 132, 199, 0.3); /* léger effet 3D */
+  box-shadow: inset 0 0 5px rgba(2, 132, 199, 0.3);
 }
 
 .feed-progress-fill {
   height: 100%;
-  background-color: #0284c7; /* couleur principale */
-  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* animation plus douce */
+  background-color: #0284c7;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 9999px;
-  will-change: width; /* optimisation performance */
+  will-change: width;
 }
 
 .feed-progress-label {
@@ -186,7 +200,7 @@ h2.mb-3.pb-2.border-bottom {
   font-size: 0.95rem;
 }
 
-/* Barre sticky (fixe en haut quand l'autre disparaît) */
+/* Barre sticky */
 .sticky-progress-bar {
   position: fixed;
   top: 0;
@@ -206,7 +220,7 @@ h2.mb-3.pb-2.border-bottom {
   will-change: width;
 }
 
-
+/* Contenu des articles */
 .article-content {
   font-size: 20px !important;
   line-height: 1.5;
@@ -219,19 +233,19 @@ h2.mb-3.pb-2.border-bottom {
 .article-content h4,
 .article-content h5,
 .article-content h6 {
-  font-size: 20px !important; /* même taille que le texte normal */
+  font-size: 20px !important;
   font-weight: normal !important;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
-/* Par défaut, bouton avec taille standard */
+/* Boutons */
 .btn-primary {
   min-width: 100px;
   padding: 0.375rem 0.75rem;
 }
 
-/* Sur mobile (max 576px), bouton plein largeur */
+/* Responsive */
 @media (max-width: 576px) {
   .btn-primary {
     width: 100%;
@@ -240,13 +254,12 @@ h2.mb-3.pb-2.border-bottom {
     font-size: 1rem;
   }
 
-  /* Pour que le conteneur autour du bouton ne force pas la taille */
   .d-flex > div > button.btn-primary {
     flex-grow: 1;
   }
 }
 
-/* Styles pour l'affichage en grille */
+/* Cartes d'articles */
 .feed-item-card {
   transition: all 0.3s ease;
   border: 1px solid rgba(191, 162, 74, 0.2);
@@ -351,11 +364,7 @@ h2.mb-3.pb-2.border-bottom {
   transform: scale(1.02);
 }
 
-/* Animation d'entrée pour les cartes */
-.feed-item-card {
-  animation: fadeInUp 0.6s ease-out;
-}
-
+/* Animation d'entrée */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -365,6 +374,10 @@ h2.mb-3.pb-2.border-bottom {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.feed-item-card {
+  animation: fadeInUp 0.6s ease-out;
 }
 
 /* Responsive pour les cartes */
@@ -382,8 +395,6 @@ h2.mb-3.pb-2.border-bottom {
     padding: 0.3rem 0.5rem;
   }
 }
-
-/* Container filtre général */
 
 /* Styles pour l'article aléatoire */
 .random-article-highlight {

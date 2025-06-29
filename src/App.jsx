@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { feedsByFolder as initialFeedsByFolder } from "./components/data/baseFeedsByFolder";
-import Feed from "./components/Feed/Feed";
-import FolderSelector from "./components/Feed/FolderSelector";
-import NewsCarousel from "./components/Feed/NewsCarousel";
+import Feed from "./components/features/feed/components/FeedList";
+import FolderSelector from "./components/features/feed/components/FolderSelector";
+import NewsCarousel from "./components/features/feed/components/NewsCarousel";
 import logo from "./assets/logo.png";
 
 export default function App() {

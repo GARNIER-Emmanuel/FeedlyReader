@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import '../Style/Feed.css';
+import "../../styles/Feed.css";
 
 export default function FeedItem({ article }) {
   const [expanded, setExpanded] = useState(false);

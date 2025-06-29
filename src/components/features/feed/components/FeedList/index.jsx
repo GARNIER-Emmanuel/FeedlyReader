@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import FeedItem from "./FeedItem";
-import SearchBar from "../tools/SearchBar";
-import ReadingTimeFilter from "../tools/ReadingTimeFilter";
-import SortOrderSelector from "../tools/SortOrderSelector";
-import FeedSelector from "../tools/FeedSelector";
-import '../Style/Feed.css';
+import FeedItem from "../FeedItem";
+import SearchBar from "../../../filters/components/SearchBar";
+import ReadingTimeFilter from "../../../filters/components/ReadingTimeFilter";
+import SortOrderSelector from "../../../filters/components/SortOrderSelector";
+import FeedSelector from "../../../filters/components/FeedSelector";
+import "../../styles/Feed.css";
 
 export default function Feed({ feeds, selectedFolder, onDeleteFeed, showRandomArticle = false, onFilterChange }) {
   const [allArticles, setAllArticles] = useState([]);
