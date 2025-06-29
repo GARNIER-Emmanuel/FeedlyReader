@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { feedsByFolder as initialFeedsByFolder } from "./components/data/baseFeedsByFolder";
 import Feed from "./components/Feed/Feed";
 import FolderSelector from "./components/Feed/FolderSelector";
+import NewsCarousel from "./components/Feed/NewsCarousel";
 import logo from "./assets/logo.png";
 
 export default function App() {
@@ -11,12 +12,44 @@ export default function App() {
   const [feedsByFolder, setFeedsByFolder] = useState(savedFeedsByFolder || { ...initialFeedsByFolder });
   const [folders, setFolders] = useState(Object.keys(feedsByFolder));
   const [selectedFolder, setSelectedFolder] = useState(Object.keys(feedsByFolder)[0] || "");
+  const [showRandomArticle, setShowRandomArticle] = useState(false);
+  
+  // Référence pour la section des thèmes
+  const themesSectionRef = useRef(null);
 
   // Sauvegarder dans localStorage à chaque modif
   useEffect(() => {
     localStorage.setItem("feedsByFolder", JSON.stringify(feedsByFolder));
     setFolders(Object.keys(feedsByFolder));
   }, [feedsByFolder]);
+
+  // Fonction pour scroller vers les thèmes
+  const scrollToThemes = () => {
+    if (themesSectionRef.current) {
+      themesSectionRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  };
+
+  // Fonction pour changer de dossier avec scroll
+  const handleFolderChange = (folder) => {
+    setSelectedFolder(folder);
+    // Scroll vers les thèmes après un court délai pour laisser le temps au changement
+    setTimeout(scrollToThemes, 100);
+  };
+
+  // Fonction pour l'article aléatoire avec scroll
+  const handleRandomArticle = () => {
+    setShowRandomArticle(true);
+    // Sélectionner un dossier aléatoire
+    const allFolders = Object.keys(feedsByFolder);
+    const randomFolder = allFolders[Math.floor(Math.random() * allFolders.length)];
+    setSelectedFolder(randomFolder);
+    // Scroll vers les thèmes
+    setTimeout(scrollToThemes, 100);
+  };
 
   // Supprimer un dossier
   const deleteFolder = (folderName) => {
@@ -56,6 +89,13 @@ export default function App() {
     setSelectedFolder(Object.keys(initialFeedsByFolder)[0] || "");
   };
 
+  // Réinitialiser l'affichage aléatoire quand on change de dossier manuellement
+  useEffect(() => {
+    if (showRandomArticle) {
+      setShowRandomArticle(false);
+    }
+  }, [selectedFolder]);
+
   return (
     <Router>
       <div className="min-vh-100" style={{ color: "#f5f5f5", minHeight: "100vh" }}>
@@ -84,10 +124,6 @@ export default function App() {
                 }}
               />
             </header>
-                  <p className="text-secondary fs-6 text-center text-md-start mb-3">
-                    Choisis une catégorie pour afficher les flux RSS associés.
-                  </p>
-
           </div>
 
           <Routes>
@@ -95,16 +131,22 @@ export default function App() {
               path="/"
               element={
                 <>
+                  {/* Carrousel d'actualités récentes */}
+                  <NewsCarousel feeds={Object.values(feedsByFolder).flat()} />
+                  
+                  {/* Section des thèmes avec référence */}
                   <section
+                    ref={themesSectionRef}
                     className="mb-0 d-flex flex-wrap gap-3 justify-content-center justify-content-md-start folder-selector"
                     style={{ overflowX: "auto", whiteSpace: "nowrap" }}
                   >
                     <FolderSelector
                       folders={folders}
                       selected={selectedFolder}
-                      onChange={setSelectedFolder}
+                      onChange={handleFolderChange}
                       onDeleteFolder={deleteFolder}
                       onRenameFolder={renameFolder}
+                      onRandomArticle={handleRandomArticle}
                     />
                   </section>
 
@@ -114,6 +156,8 @@ export default function App() {
                       feeds={feedsByFolder[selectedFolder] || []}
                       selectedFolder={selectedFolder}
                       onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
+                      showRandomArticle={showRandomArticle}
+                      onFilterChange={scrollToThemes}
                     />
                   </main>
                 </>

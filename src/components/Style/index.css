@@ -1,5 +1,3 @@
-
-
 /* Animation du dégradé */
 @keyframes gradientAnimation {
   0% {
@@ -140,7 +138,7 @@ header img {
 .article-content p {
   line-height: 1.6;
   margin-bottom: 1rem;
-  color: #d4c373; /* doré pâle pour texte */
+  color: #ffffff;
 }
 
 /* Footer */
@@ -252,7 +250,7 @@ img {
 
 /* Paragraphes dorés plus clairs et lisibles */
 .card p, .article-content p {
-  color: #adbcd3;
+  color: #ffffff;
 }
 
 /* Liens dorés prononcés avec effet hover */
@@ -272,7 +270,7 @@ img {
 }
 .feed-item-card {
   padding: 16px; /* 🌟 Marge interne tout autour */
-  border-radius: 8px; /* Facultatif : coins arrondis pour l’esthétique */
+  border-radius: 8px; /* Facultatif : coins arrondis pour l'esthétique */
   background-color: #1f1f1f; /* Ton fond par défaut */
   color: #fff; /* Pour que le texte ressorte bien */
 }

@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function FolderSelector({ folders, selected, onChange }) {
+export default function FolderSelector({ folders, selected, onChange, onRandomArticle }) {
   const navigate = useNavigate();
 
   // refs pour chaque folder, indexé par le nom du folder
@@ -16,6 +16,12 @@ export default function FolderSelector({ folders, selected, onChange }) {
       });
     }
   }, [selected]);
+
+  const handleRandomArticle = () => {
+    if (onRandomArticle) {
+      onRandomArticle();
+    }
+  };
 
   return (
     <nav
@@ -67,6 +73,34 @@ export default function FolderSelector({ folders, selected, onChange }) {
           {folder}
         </button>
       ))}
+
+      {/* Bouton Article Aléatoire */}
+      <button
+        onClick={handleRandomArticle}
+        className="btn btn-sm btn-success fw-semibold"
+        style={{
+          flex: "0 0 auto",
+          scrollSnapAlign: "center",
+          whiteSpace: "nowrap",
+          userSelect: "none",
+          borderRadius: "1rem",
+          padding: "0.3rem 1rem",
+          boxShadow: "0 1px 3px rgba(34, 197, 94, 0.3)",
+          transition: "all 0.3s ease",
+          border: "2px solid rgba(34, 197, 94, 0.3)",
+        }}
+        role="listitem"
+        onMouseEnter={(e) => {
+          e.currentTarget.style.boxShadow = "0 2px 8px rgba(34, 197, 94, 0.5)";
+          e.currentTarget.style.transform = "scale(1.05)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.boxShadow = "0 1px 3px rgba(34, 197, 94, 0.3)";
+          e.currentTarget.style.transform = "scale(1)";
+        }}
+      >
+        🎲 Article Aléatoire
+      </button>
     </nav>
   );
 }

@@ -210,7 +210,7 @@ h2.mb-3.pb-2.border-bottom {
 .article-content {
   font-size: 20px !important;
   line-height: 1.5;
-  color: #333;
+  color: #ffffff;
 }
 
 .article-content h1,
@@ -243,6 +243,263 @@ h2.mb-3.pb-2.border-bottom {
   /* Pour que le conteneur autour du bouton ne force pas la taille */
   .d-flex > div > button.btn-primary {
     flex-grow: 1;
+  }
+}
+
+/* Styles pour l'affichage en grille */
+.feed-item-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(191, 162, 74, 0.2);
+  background: linear-gradient(135deg, rgba(191, 162, 74, 0.1), rgba(59, 130, 246, 0.05));
+}
+
+.feed-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(191, 162, 74, 0.3);
+  border-color: rgba(191, 162, 74, 0.4);
+}
+
+.feed-item-card.read {
+  border: 2px solid #9fe29c;
+  background: linear-gradient(135deg, rgba(159, 226, 156, 0.1), rgba(191, 162, 74, 0.05));
+}
+
+/* Container pour l'image */
+.article-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.article-image {
+  transition: transform 0.3s ease;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.feed-item-card:hover .article-image {
+  transform: scale(1.05);
+}
+
+/* Placeholder pour image manquante */
+.article-image-placeholder {
+  height: 200px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px dashed rgba(59, 130, 246, 0.3);
+}
+
+.placeholder-content {
+  text-align: center;
+  color: rgba(59, 130, 246, 0.7);
+}
+
+.placeholder-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Section résumé */
+.article-summary {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 3px solid #3b82f6;
+}
+
+.summary-text {
+  color: #ffffff !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  font-style: italic;
+}
+
+.feed-item-card .card-title {
+  color: #3b82f6;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
+}
+
+.feed-item-card .card-text {
+  color: #ffffff;
+  line-height: 1.4;
+}
+
+.feed-item-card .badge {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.feed-item-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.feed-item-card:hover .card-img-top {
+  transform: scale(1.02);
+}
+
+/* Animation d'entrée pour les cartes */
+.feed-item-card {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive pour les cartes */
+@media (max-width: 768px) {
+  .feed-item-card .card-title {
+    font-size: 1rem;
+  }
+  
+  .feed-item-card .card-text {
+    font-size: 0.85rem;
+  }
+  
+  .feed-item-card .badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
+}
+
+/* Container filtre général */
+
+/* Styles pour l'article aléatoire */
+.random-article-highlight {
+  position: relative;
+  border: 3px solid #22c55e;
+  border-radius: 12px;
+  padding: 1rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  animation: randomArticleGlow 2s ease-in-out infinite alternate;
+}
+
+.random-article-highlight::before {
+  content: "🎲";
+  position: absolute;
+  top: -15px;
+  left: 20px;
+  background: #22c55e;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 1.2rem;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+}
+
+@keyframes randomArticleGlow {
+  from {
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  }
+  to {
+    box-shadow: 0 12px 35px rgba(34, 197, 94, 0.5);
+  }
+}
+
+.random-article-highlight .feed-item-card {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.random-article-highlight .feed-item-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Styles pour la barre de statut du cache */
+.cache-status-bar {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.5rem 0 !important;
+}
+
+.cache-status-bar .badge {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.cache-status-bar button {
+  transition: all 0.3s ease;
+}
+
+.cache-status-bar button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+/* Styles pour le bouton d'actualisation */
+.refresh-button {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1.2rem !important;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+.refresh-button:hover {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5) !important;
+  color: white !important;
+}
+
+.refresh-button:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4) !important;
+}
+
+.refresh-icon {
+  font-size: 1rem;
+  animation: spin 2s linear infinite;
+  animation-play-state: paused;
+}
+
+.refresh-button:hover .refresh-icon {
+  animation-play-state: running;
+}
+
+.refresh-text {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
