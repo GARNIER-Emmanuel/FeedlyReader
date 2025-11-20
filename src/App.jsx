@@ -6,10 +6,13 @@ import FolderSelector from "./components/features/feed/components/FolderSelector
 import NewsCarousel from "./components/features/feed/components/NewsCarousel";
 import FeedManager from "./components/features/feed/components/FeedManager";
 import About from "./components/features/about/About";
-import Header from "./components/layout/Header";
-import Footer from "./components/layout/Footer";
+import StarfieldBackground from "./components/visual/StarfieldBackground";
+import SettingsPanel from "./components/settings/SettingsPanel.jsx";
+import NeoShell from "./components/layout/NeoShell";
+import HomeView from "./components/features/home/HomeView.jsx";
+import ReadView from "./components/features/read/ReadView.jsx";
 
-export default function App() {
+export default function App() { const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; const initialTheme = localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'); const [theme, setTheme] = useState(initialTheme); useEffect(()=>{ document.documentElement.setAttribute('data-theme', theme); localStorage.setItem('theme', theme); }, [theme]); const toggleTheme = ()=> setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   // Charger depuis localStorage ou initial
   const savedFeedsByFolder = JSON.parse(localStorage.getItem("feedsByFolder"));
   const [feedsByFolder, setFeedsByFolder] = useState(savedFeedsByFolder || { ...initialFeedsByFolder });
@@ -112,105 +115,50 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-vh-100" style={{ color: "#f5f5f5", minHeight: "100vh" }}>
-        {/* Nouveau Header */}
-        <Header />
-        
-        <div className="container-fluid py-1">
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  {/* Carrousel d'actualités récentes */}
-                  <NewsCarousel feeds={Object.values(feedsByFolder).flat()} />
-                  
-                  {/* Section des thèmes avec référence */}
-                  <section
-                    ref={themesSectionRef}
-                    className="mb-0 folder-selector"
-                    style={{ overflowX: "auto", whiteSpace: "nowrap", marginBottom: "-1rem" }}
-                  >
-                    <div className="d-flex flex-wrap gap-3 align-items-center">
-                      <div className="d-flex flex-wrap gap-3 align-items-center">
-                        <FolderSelector
-                          folders={folders}
-                          selected={selectedFolder}
-                          onChange={handleFolderChange}
-                          onDeleteFolder={deleteFolder}
-                          onRenameFolder={renameFolder}
-                          onRandomArticle={handleRandomArticle}
-                        />
-                      </div>
-                    </div>
-                  </section>
-
-                  {/* Bouton Actualiser séparé pour mobile */}
-                  <div className="refresh-button-container d-flex justify-content-center mt-2">
-                    <button 
-                      className="btn btn-sm refresh-button"
-                      onClick={() => {
-                        // Vider tous les caches
-                        Object.values(feedsByFolder).flat().forEach(feed => {
-                          const feedName = typeof feed === 'string' ? new URL(feed).hostname.replace('www.', '') : feed.name;
-                          const feedUrl = typeof feed === 'string' ? feed : feed.url;
-                          const cacheKey = `${feedName}-${feedUrl}`;
-                          localStorage.removeItem(`feed-cache-${cacheKey}`);
-                        });
-                        // Forcer le rechargement
-                        window.location.reload();
-                      }}
-                      title="Forcer le rafraîchissement de tous les feeds"
-                    >
-                      <span className="refresh-icon">🔄</span>
-                      <span className="refresh-text">Actualiser</span>
-                    </button>
-                  </div>
-
-                  {/* Ici on place le Feed, en lui passant les feeds du dossier sélectionné */}
-                  <main className="full-width feed-container-main" style={{ padding: "0 1rem" }}>
-                    <Feed
-                      feeds={showRandomArticle ? Object.values(feedsByFolder).flat() : feedsByFolder[selectedFolder] || []}
-                      selectedFolder={selectedFolder}
-                      onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
-                      showRandomArticle={showRandomArticle}
-                      isRandomLoading={isRandomLoading}
-                      onFilterChange={scrollToThemes}
-                    />
-                  </main>
-                </>
-              }
-            />
-            <Route
-              path="/feeds"
-              element={
-                <FeedManager 
-                  feedsByFolder={feedsByFolder}
-                  setFeedsByFolder={setFeedsByFolder}
-                  onFeedsUpdate={(newFeeds) => {
-                    setFeedsByFolder(newFeeds);
-                    localStorage.setItem("feedsByFolder", JSON.stringify(newFeeds));
-                    setFolders(Object.keys(newFeeds));
-                    // Réinitialiser la sélection si le dossier actuel n'existe plus
-                    if (!newFeeds[selectedFolder]) {
-                      setSelectedFolder(Object.keys(newFeeds)[0] || "");
-                    }
-                  }}
-                />
-              }
-            />
-            <Route
-              path="/about"
-              element={
-                <About />
-              }
-            />
-          </Routes>
-        </div>
-        
-        {/* Nouveau Footer */}
-        <Footer />
-      </div>
+      <StarfieldBackground />
+      <SettingsPanel />
+      <NeoShell theme={theme} onToggleTheme={toggleTheme}>
+        <Routes>
+          <Route path="/" element={<HomeView />} />
+          <Route
+            path="/read"
+            element={
+              <ReadView
+                feedsByFolder={feedsByFolder}
+                folders={folders}
+                selectedFolder={selectedFolder}
+                onFolderChange={handleFolderChange}
+                onDeleteFolder={deleteFolder}
+                onRenameFolder={renameFolder}
+                onRandomArticle={handleRandomArticle}
+                onDeleteFeed={(feedUrl) => deleteFeedFromFolder(selectedFolder, feedUrl)}
+                showRandomArticle={showRandomArticle}
+                isRandomLoading={isRandomLoading}
+                onFilterChange={scrollToThemes}
+                themesSectionRef={themesSectionRef}
+              />
+            }
+          />
+          <Route
+            path="/feeds"
+            element={
+              <FeedManager 
+                feedsByFolder={feedsByFolder}
+                setFeedsByFolder={setFeedsByFolder}
+                onFeedsUpdate={(newFeeds) => {
+                  setFeedsByFolder(newFeeds);
+                  localStorage.setItem("feedsByFolder", JSON.stringify(newFeeds));
+                  setFolders(Object.keys(newFeeds));
+                  if (!newFeeds[selectedFolder]) {
+                    setSelectedFolder(Object.keys(newFeeds)[0] || "");
+                  }
+                }}
+              />
+            }
+          />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </NeoShell>
     </Router>
   );
 }

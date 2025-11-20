@@ -1,17 +1,20 @@
 /* Carrousel d'actualités récentes */
 .news-carousel-container {
-  margin: 1rem 0 3rem 0;
+  /* S'intègre proprement dans NeoShell sans déborder en pleine largeur */
+  margin: 1rem 0 2rem 0;
   padding: 0;
   background: transparent;
-  border-radius: 0;
+  border-radius: 16px;
   border: none;
   backdrop-filter: none;
-  width: 100vw;
+  width: 100%;
+  max-width: 1400px;
   position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  left: auto;
+  right: auto;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
 }
 
 .carousel-header {
@@ -21,15 +24,15 @@
 }
 
 .carousel-header h2 {
-  color: #3b82f6;
+  color: var(--c-blue);
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  text-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.25);
 }
 
 .carousel-header p {
-  color: #70d2ff;
+  color: var(--c-cyan);
   font-size: 1.1rem;
   margin: 0;
   opacity: 0.9;
@@ -51,7 +54,7 @@
   height: 500px;
   overflow: hidden;
   border-radius: 0;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
 
 .carousel-slide {
@@ -73,7 +76,7 @@
 .carousel-card {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(37, 99, 235, 0.2));
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(37, 99, 235, 0.04));
   border-radius: 0;
   overflow: hidden;
   display: flex;
@@ -105,15 +108,15 @@
   left: 0;
   right: 0;
   padding: 2rem;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
 }
 
 .carousel-category {
-  background: rgba(59, 130, 246, 0.9);
-  color: #ffffff;
+  background: var(--c-blue);
+  color: var(--c-text);
   padding: 0.5rem 1.2rem;
   border-radius: 25px;
   font-size: 0.9rem;
@@ -123,7 +126,7 @@
 }
 
 .carousel-date {
-  color: #e0e0ff;
+  color: var(--c-muted);
   font-size: 0.9rem;
   background: rgba(0, 0, 0, 0.6);
   padding: 0.5rem 1.2rem;
@@ -140,16 +143,16 @@
 }
 
 .carousel-title {
-  color: #3b82f6;
+  color: var(--c-blue);
   font-size: 1.6rem;
   font-weight: 700;
   margin: 0 0 1rem 0;
   line-height: 1.3;
-  text-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.22);
 }
 
 .carousel-description {
-  color: #ffffff;
+  color: var(--c-text);
   font-size: 1.1rem;
   line-height: 1.6;
   margin: 0 0 0.5rem 0;
@@ -161,15 +164,15 @@
 }
 
 .carousel-source small {
-  color: #3b82f6;
+  color: var(--c-blue);
   font-size: 0.9rem;
   font-style: italic;
   opacity: 0.8;
 }
 
 .carousel-read-more {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  color: var(--c-text);
   border: none;
   padding: 0.8rem 1.5rem;
   border-radius: 30px;
@@ -178,15 +181,15 @@
   cursor: pointer;
   transition: all 0.3s ease;
   align-self: flex-start;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
   z-index: 10;
   position: relative;
 }
 
 .carousel-read-more:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: linear-gradient(135deg, var(--accent-b), var(--accent-a));
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.16);
 }
 
 /* Actions du carrousel (boutons) */
@@ -203,8 +206,8 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(59, 130, 246, 0.9);
-  color: white;
+  background: var(--c-blue);
+  color: var(--c-text);
   border: none;
   width: 40px;
   height: 40px;
@@ -216,13 +219,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
 }
 
 .carousel-button:hover {
-  background: rgba(37, 99, 235, 0.95);
+  background: var(--accent-a);
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.16);
 }
 
 .carousel-button-prev {
@@ -250,16 +253,16 @@
   height: 16px;
   border-radius: 50%;
   border: none;
-  background: rgba(59, 130, 246, 0.3);
+  background: rgba(59, 130, 246, 0.18);
   cursor: pointer;
   transition: all 0.3s ease;
   z-index: 5;
 }
 
 .carousel-indicator.active {
-  background: #3b82f6;
+  background: var(--c-blue);
   transform: scale(1.3);
-  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 15px rgba(0,0,0,0.14);
 }
 
 .carousel-indicator:hover {
@@ -274,12 +277,12 @@
   align-items: center;
   justify-content: center;
   height: 300px;
-  color: #3b82f6;
+  color: var(--c-blue);
 }
 
 .carousel-loading .spinner {
-  border: 4px solid rgba(59, 130, 246, 0.1);
-  border-left-color: #3b82f6;
+  border: 4px solid rgba(59, 130, 246, 0.08);
+  border-left-color: var(--c-blue);
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -302,13 +305,13 @@
 /* Responsive design */
 @media (max-width: 768px) {
   .news-carousel-container {
-    margin: 3rem 0 2rem 0;
+    margin: 1.5rem auto 1.5rem auto;
     padding: 0 1rem;
-    width: calc(100vw - 2rem);
-    left: 0;
-    right: 0;
-    margin-left: 0;
-    margin-right: 0;
+    width: 100%;
+    left: auto;
+    right: auto;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .carousel-content {

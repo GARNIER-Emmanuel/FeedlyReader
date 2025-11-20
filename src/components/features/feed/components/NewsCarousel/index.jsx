@@ -329,6 +329,8 @@ const NewsCarousel = ({ feeds = [] }) => {
                     src={article.image} 
                     alt={article.title}
                     className="carousel-image"
+                    loading="lazy"
+                    decoding="async"
                     onError={(e) => {
                       e.target.src = 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=400&h=200&fit=crop';
                     }}
@@ -394,4 +396,12 @@ const NewsCarousel = ({ feeds = [] }) => {
   );
 };
 
-export default NewsCarousel; 
+const propsAreEqual = (prev, next) => {
+  if ((prev.feeds || []).length !== (next.feeds || []).length) return false;
+  // shallow compare feed urls if same length
+  const prevUrls = (prev.feeds || []).map(f => (typeof f === 'object' ? f.url : f)).join('|');
+  const nextUrls = (next.feeds || []).map(f => (typeof f === 'object' ? f.url : f)).join('|');
+  return prevUrls === nextUrls;
+};
+
+export default React.memo(NewsCarousel, propsAreEqual); 
