@@ -10,8 +10,8 @@ export const feedsByFolder = {
     { name: "The Next Web", url: "https://thenextweb.com/feed/" },
   ],
 
-  AudioPluginDeals: [
-    { name: "audioplugin", url: "https://audioplugin.deals/feed/" },
+ AudioPluginDeals: [
+    { name: "Plugin Boutique", url: "https://www.pluginboutique.com/rss" },
   ],
 
   NewsFR: [

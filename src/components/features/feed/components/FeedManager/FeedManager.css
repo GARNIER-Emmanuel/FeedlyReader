@@ -1,0 +1,217 @@
+/* Feed Manager Styles (theme-aware) */
+.feed-manager {
+  padding: 2rem 0;
+  min-height: 100vh;
+  background-size: 600% 600%;
+  animation: gradientAnimation 50s ease infinite;
+  color: var(--c-text);
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.feed-manager h1 {
+  color: var(--c-gold);
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.12);
+}
+
+.feed-manager .card {
+  background: var(--c-surface);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(6px);
+  color: var(--c-text);
+}
+
+.feed-manager .card-header {
+  background: rgba(255,255,255,0.02);
+  border-bottom: 1px solid var(--glass-border);
+  color: var(--c-gold);
+}
+
+.feed-manager .card-header h5 {
+  color: var(--c-gold);
+  margin: 0;
+}
+
+.feed-manager .form-control,
+.feed-manager .form-select {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--glass-border);
+  color: var(--c-text);
+  backdrop-filter: blur(4px);
+}
+
+.feed-manager .form-control:focus,
+.feed-manager .form-select:focus {
+  background: rgba(255,255,255,0.04);
+  border-color: var(--accent-a);
+  box-shadow: 0 0 0 0.2rem rgba(59,130,246,0.08);
+  color: var(--c-text);
+}
+
+.feed-manager .form-control::placeholder {
+  color: rgba(255,255,255,0.5);
+}
+
+.feed-manager .btn-primary {
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  border: none;
+  color: var(--c-text);
+}
+
+.feed-manager .btn-primary:hover {
+  background: linear-gradient(135deg, var(--accent-b), var(--accent-a));
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+.feed-manager .btn-outline-primary {
+  border-color: var(--c-blue);
+  color: var(--c-blue);
+  background: transparent;
+}
+
+.feed-manager .btn-outline-primary:hover {
+  background: var(--c-blue);
+  border-color: var(--c-blue);
+  color: var(--c-text);
+}
+
+.feed-manager .btn-success { /* keep green for success */
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  color: white;
+}
+
+.feed-manager .btn-success:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.12);
+}
+
+.feed-manager .btn-warning {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: none;
+  color: white;
+}
+
+.feed-manager .btn-warning:hover {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.12);
+}
+
+.feed-manager .btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border: none;
+  color: white;
+}
+
+.feed-manager .btn-danger:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.12);
+}
+
+.feed-manager .btn-outline-danger {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: transparent;
+}
+
+.feed-manager .btn-outline-danger:hover {
+  background: #ef4444;
+  border-color: #ef4444;
+  color: white;
+}
+
+.feed-manager .btn-secondary {
+  background: rgba(255,255,255,0.03);
+  border-color: var(--glass-border);
+  color: var(--c-text);
+}
+
+.feed-manager .btn-secondary:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: var(--glass-border);
+  color: var(--c-text);
+}
+
+.feed-manager .global-actions {
+  text-align: center;
+}
+
+.feed-manager .folders-list {
+  margin-top: 2rem;
+}
+
+.feed-manager .feed-item {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.feed-manager .feed-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateX(5px);
+}
+
+.feed-manager .feed-item:last-child {
+  border-bottom: none !important;
+}
+
+.feed-manager .feed-info {
+  flex: 1;
+}
+
+.feed-manager .feed-info strong {
+  color: var(--c-gold);
+}
+
+.feed-manager .feed-info small {
+  color: var(--c-muted);
+  word-break: break-all;
+}
+
+.feed-manager .text-muted {
+  color: var(--c-muted) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .feed-manager {
+    padding: 1rem 0;
+  }
+  
+  .feed-manager .card-body {
+    padding: 1rem;
+  }
+  
+  .feed-manager .feed-item {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.5rem;
+  }
+  
+  .feed-manager .feed-item > div:last-child {
+    align-self: flex-end;
+  }
+}
+
+@media (max-width: 576px) {
+  .feed-manager .global-actions .btn {
+    margin-bottom: 0.5rem;
+    width: 100%;
+  }
+  
+  .feed-manager .card-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start !important;
+  }
+}

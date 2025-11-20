@@ -1,0 +1,92 @@
+.app-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  padding: 0.35rem 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.75rem;
+}
+
+.header-logo h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.header-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+}
+
+.header-nav li { position: relative; }
+
+.header-nav a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.header-nav a:hover { transform: translateY(-2px); }
+.header-nav a.active { color: var(--c-gold); }
+.header-nav a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--c-gold);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+.header-nav a:hover::after, .header-nav a.active::after { width: 80%; }
+
+.header-actions{ display: flex; gap: .5rem; align-items: center; }
+.settings-toggle,
+.theme-toggle {
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b));
+  color: white;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  box-shadow: 0 10px 20px rgba(124,58,237,.35);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.settings-toggle:hover, .theme-toggle:hover { transform: translateY(-2px); box-shadow: 0 14px 26px rgba(124,58,237,.45); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-container { grid-template-columns: 1fr auto; grid-auto-flow: row; }
+  .theme-toggle { grid-column: 2; }
+  .header-nav ul { gap: 0.4rem; flex-wrap: wrap; justify-content: center; }
+}
+
+@media (max-width: 480px) {
+  .header-container { grid-template-columns: 1fr; }
+  .header-logo h1 { font-size: 1rem; margin-bottom: 0.2rem; }
+  .header-nav ul { gap: 0.3rem; justify-content: center; }
+  .header-nav a { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
+}

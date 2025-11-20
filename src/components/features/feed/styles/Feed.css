@@ -1,0 +1,1054 @@
+.container.my-4 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Theme variables for light/dark mode and easy theming */
+:root {
+  --c-bg: #0b1220;
+  --c-surface: rgba(255,255,255,0.04);
+  --c-text: #e6eef8;
+  --c-muted: rgba(230,238,248,0.6);
+  --c-accent: #3b82f6;
+  --c-gold: #f59e0b;
+  --glass-border: rgba(255,255,255,0.06);
+  --card-shadow: 0 10px 30px rgba(2,6,23,0.35);
+}
+
+.dark {
+  --c-bg: #071022;
+  --c-surface: rgba(255,255,255,0.03);
+  --c-text: #e6eef8;
+}
+
+.light {
+  --c-bg: #f7fafc;
+  --c-surface: rgba(255,255,255,0.85);
+  --c-text: #0b1220;
+  --glass-border: rgba(2,6,23,0.06);
+  --card-shadow: 0 8px 20px rgba(2,6,23,0.06);
+}
+
+.custom-feed-filter-card {
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background-color: var(--c-surface);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Loader spinner */
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: var(--c-blue);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Section title with border bottom */
+h2.mb-3.pb-2.border-bottom {
+  color: var(--c-blue);
+  border-color: var(--glass-border);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom-style: solid;
+}
+
+/* No article found text */
+.no-articles-text {
+  font-style: italic;
+  color: var(--c-muted);
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Grid for articles */
+.row.g-4 > .col-12.col-md-4.col-lg-3 {
+  display: flex;
+}
+
+/* Make all feed items stretch to equal height */
+.row.g-4 > .col-12.col-md-4.col-lg-3 > * {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Buttons container */
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+/* Load more button */
+.btn-outline-primary.custom-load-more {
+  background-color: rgba(34,211,238,0.12);
+  border-color: rgba(34,211,238,0.12);
+  color: var(--c-text);
+  font-weight: 600;
+  border-radius: 9999px; /* rounded-pill */
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.btn-outline-primary.custom-load-more:hover {
+  background-color: var(--c-cyan);
+  border-color: var(--c-cyan);
+  color: var(--c-bg);
+}
+
+/* Load all button */
+.btn-primary.custom-load-all {
+  background-color: var(--c-blue);
+  border-color: var(--c-blue);
+  color: var(--c-text);
+  font-weight: 600;
+  border-radius: 9999px;
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-primary.custom-load-all:hover {
+  background-color: var(--accent-a);
+  border-color: var(--accent-a);
+}
+
+/* Scroll to top button */
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: var(--c-blue);
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  color: var(--c-text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.scroll-to-top-btn:hover {
+  background-color: var(--accent-a);
+}
+
+/* Filtre */
+.filtre {
+  background-color: transparent;
+  border: none;
+}
+
+/* Section min-height */
+.full-height-section {
+  min-height: calc(200vh - 600px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Styles pour les composants Feed */
+
+/* Container principal */
+.feed-container {
+  overflow-x: hidden;
+  overflow-y: visible;
+  min-height: 600px;
+  transition: all 0.3s ease;
+}
+
+/* Éviter les barres de scroll temporaires */
+.feed-container.loading {
+  overflow: hidden;
+}
+
+/* Supprimer les barres de scroll des sections */
+.feed-container section,
+.feed-container .row,
+.feed-container .col {
+  overflow: visible;
+}
+
+/* Barre de filtres */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  overflow: visible;
+}
+
+.filter-bar > div {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Make the filter bar sticky without overlapping content */
+.filter-bar.sticky {
+  position: sticky;
+  top: 0; /* adjust if you have a header */
+  z-index: 40;
+  background: var(--c-surface);
+  backdrop-filter: blur(6px);
+  padding: 0.5rem 0.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+/* Focus states for accessibility */
+.feed-card:focus {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+.feed-card:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+/* Modern card / glassmorphism look */
+.feed-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  transition: transform 0.28s cubic-bezier(.2,.8,.2,1), box-shadow 0.28s ease;
+  box-shadow: var(--card-shadow);
+}
+
+.feed-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 45px rgba(2,6,23,0.2);
+}
+
+/* Ensure buttons and inputs show clear focus outlines */
+.filter-bar input:focus,
+.filter-bar select:focus,
+.filter-bar button:focus,
+.filter-bar .form-control:focus {
+  outline: 3px solid rgba(59,130,246,0.12);
+  box-shadow: none;
+}
+
+/* Larger tap targets on mobile */
+@media (max-width: 576px) {
+  .feed-card { padding: 0.5rem; }
+  .feed-card .btn { padding: 0.9rem 1rem; font-size: 1rem; }
+}
+
+/* Barre de progression */
+.feed-progress-wrapper {
+  margin: 2rem 0;
+  width: 100%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feed-progress-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--c-surface-strong);
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.08);
+}
+
+.feed-progress-fill {
+  height: 100%;
+  background-color: var(--c-blue);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 9999px;
+  will-change: width;
+}
+
+.feed-progress-label {
+  text-align: center;
+  margin-top: 0.5rem;
+  color: var(--c-blue);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* Barre sticky */
+.sticky-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: var(--c-surface);
+  padding: 0.25rem 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.sticky-progress-bar .feed-progress-fill {
+  height: 100%;
+  background-color: var(--c-blue);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 9999px;
+  will-change: width;
+}
+
+/* Contenu des articles */
+.article-content {
+  font-size: 20px !important;
+  line-height: 1.5;
+  color: var(--c-text);
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+  font-size: 20px !important;
+  font-weight: normal !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Boutons */
+.btn-primary {
+  min-width: 100px;
+  padding: 0.375rem 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .btn-primary {
+    width: 100%;
+    min-width: auto;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+  }
+
+  .d-flex > div > button.btn-primary {
+    flex-grow: 1;
+  }
+}
+
+/* Cartes d'articles */
+.feed-item-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  overflow: visible;
+}
+
+.feed-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  border-color: var(--glass-border);
+}
+
+/* Styles spécifiques au mode embedded (intégration dans ReadView) */
+.feed-container.embedded {
+  padding: 0;
+  margin: 0;
+  min-height: auto;
+}
+
+.read-center .feed-container.embedded {
+  width: 100%;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.feed-container.embedded .filter-bar {
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  align-items: center;
+}
+
+.feed-container.embedded .filter-bar > div {
+  min-width: 0;
+}
+
+.feed-container.embedded .row.row-cols-1 {
+  margin-top: 0.5rem;
+}
+
+.feed-container.embedded .feed-progress-wrapper {
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.feed-container.embedded .scroll-to-top-btn {
+  display: none !important;
+}
+
+/* Stable layout and skeleton placeholders to avoid layout shifting */
+.feed-container {
+  /* keep a minimum area so read center doesn't collapse during loads */
+  min-height: 600px;
+  min-width: 320px;
+}
+
+.feed-container.embedded {
+  /* embedded feeds are smaller but still stable */
+  min-height: 420px;
+  min-width: 260px;
+}
+
+.feed-content-wrapper {
+  min-height: 320px;
+}
+
+.feed-skeleton-grid {
+  opacity: 0.98;
+}
+
+.skeleton-card {
+  height: 180px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.2s linear infinite;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Skeleton subparts to match card layout */
+.skeleton-card { display: flex; flex-direction: column; overflow: hidden; }
+.skeleton-image { height: 140px; width: 100%; background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.02) 75%); background-size: 200% 100%; animation: skeleton-pulse 1.2s linear infinite; }
+.skeleton-body { display: flex; flex-direction: column; gap: 8px; }
+.skeleton-title { height: 18px; width: 70%; background: rgba(255,255,255,0.06); border-radius: 6px; }
+.skeleton-meta { height: 12px; width: 50%; background: rgba(255,255,255,0.04); border-radius: 6px; }
+.skeleton-line { height: 12px; width: 100%; background: rgba(255,255,255,0.03); border-radius: 6px; }
+.skeleton-line.short { width: 60%; }
+.skeleton-actions { height: 32px; width: 40%; background: rgba(255,255,255,0.06); border-radius: 8px; margin-top: 8px; }
+
+/* CSS Grid for feed list: responsive 1 / 2 / 3 columns */
+.feed-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .feed-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1100px) {
+  .feed-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.feed-grid-item {
+  display: block;
+}
+
+/* Larger card image */
+.article-image-top.large { height: 220px; object-fit: cover; width: 100%; border-top-left-radius: 12px; border-top-right-radius: 12px; display: block; }
+.article-image-container.image-top { overflow: hidden; border-radius: 12px 12px 0 0; }
+
+/* Card body spacing adjustments */
+.feed-card .card-body { padding: 1rem; }
+
+/* Buttons: primary & secondary visual distinction */
+.btn-outline-secondary { border-color: rgba(255,255,255,0.08); color: var(--c-text); background: transparent; }
+.btn-primary { background: linear-gradient(135deg,var(--c-accent),#2563eb); border: none; }
+
+/* Ensure sticky filter bar doesn't overlap content: it keeps flow and has its own background */
+.filter-bar { position: sticky; top: 0; z-index: 50; }
+
+/* Ensure buttons have visible focus rings for keyboard users */
+.btn:focus-visible, .btn:focus { outline: 3px solid rgba(59,130,246,0.18); box-shadow: 0 8px 26px rgba(59,130,246,0.12); }
+
+/* Hover / active states for clickable elements */
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); opacity: 0.95; }
+.feed-card:hover { transform: translateY(-6px); }
+.feed-grid-item:focus-within, .feed-grid-item:hover { outline: none; }
+
+/* Toast styles */
+.toast-container {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 1050;
+}
+.toast {
+  min-width: 220px;
+  max-width: 360px;
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  color: var(--c-text);
+  background: var(--c-surface-strong);
+  box-shadow: 0 8px 30px rgba(2,6,23,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  animation: toast-in 280ms ease-out;
+}
+.toast--success { background: linear-gradient(90deg, rgba(16,185,129,0.9), rgba(5,150,105,0.9)); }
+.toast--error { background: linear-gradient(90deg, rgba(220,38,38,0.9), rgba(185,28,28,0.9)); }
+.toast-message { flex: 1; padding-right: 0.5rem; }
+.toast-close { background: transparent; border: none; color: inherit; font-size: 1rem; cursor: pointer; }
+
+@keyframes toast-in {
+  from { transform: translateY(12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* embedded image sizing */
+.feed-container.embedded .embedded-image {
+  min-height: 200px; /* ensure readable images (range 180-220) */
+  max-height: 260px;
+  overflow: hidden;
+}
+
+/* ReadView integration helpers */
+.center-top {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.center-top .folder-selector {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.read-center {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.feed-item-card.read {
+  border: 2px solid rgba(159, 226, 156, 0.18);
+  background: linear-gradient(135deg, rgba(159, 226, 156, 0.06), rgba(255,255,255,0.01));
+}
+
+/* Container pour l'image */
+.article-image-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.article-image {
+  transition: transform 0.3s ease;
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+}
+
+.feed-item-card:hover .article-image {
+  transform: scale(1.05);
+}
+
+/* Card-style layout: image on top, title, muted summary */
+.feed-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(.2,.8,.2,1), box-shadow 0.28s ease;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--c-surface);
+}
+
+.feed-card:hover {
+  transform: translateY(-6px) scale(1.006);
+  box-shadow: 0 18px 45px rgba(2,6,23,0.18);
+}
+
+.image-top { width: 100%; height: auto; display: block; }
+.article-image-top { width: 100%; height: 220px; object-fit: cover; display: block; }
+.article-image-container.image-top { border-top-left-radius: 12px; border-top-right-radius: 12px; overflow: hidden; }
+
+/* Image loading states */
+.article-image-container.image-loading { background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.02) 75%); }
+.article-image-container.image-loaded { background: transparent; }
+.image-placeholder { position: absolute; inset: 0; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
+.article-image-top.loading { opacity: 0; transform: scale(1.02); transition: opacity 260ms ease, transform 260ms ease; }
+.article-image-top.loaded { opacity: 1; transform: scale(1); transition: opacity 260ms ease, transform 260ms ease; }
+
+.feed-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  margin: 0 0 0.5rem 0;
+  color: var(--c-text);
+}
+
+.feed-card-meta { margin-bottom: 0.5rem; }
+
+.feed-card-summary {
+  color: rgba(255,255,255,0.78);
+  font-size: 0.96rem;
+  line-height: 1.6;
+  text-align: justify;
+  margin: 0 0 0.75rem 0;
+}
+
+/* Make sure the action row sits at the bottom */
+.feed-card .card-body { display: flex; flex-direction: column; gap: 0.5rem; }
+
+/* Responsive grid enforcement handled in FeedList; ensure cards look good */
+@media (max-width: 576px) {
+  .article-image-top { height: 180px; }
+  .feed-card-title { font-size: 1rem; }
+  .feed-card-summary { font-size: 0.92rem; }
+}
+
+/* New layout / typography tweaks for FeedItem */
+.feed-item-inner {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.feed-item-inner.stacked { flex-direction: column; }
+.feed-item-inner.embedded { flex-direction: row; }
+
+.feed-item-media { flex: 0 0 36%; display: flex; align-items: stretch; }
+.feed-item-media .article-image-container { width: 100%; height: 100%; }
+
+.feed-item-body { flex: 1 1 auto; display: flex; flex-direction: column; }
+
+.feed-item-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c-text);
+  margin: 0 0 0.5rem 0;
+  transition: color 0.18s ease, transform 0.18s ease;
+}
+
+.feed-item-title:hover { color: var(--c-gold); }
+
+.feed-item-meta .badge { opacity: 0.95; }
+
+.feed-item-summary {
+  color: rgba(255,255,255,0.88);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-top: 0.6rem;
+  margin-bottom: 0;
+  padding: 0.75rem;
+  background: rgba(255,255,255,0.02);
+  border-radius: 8px;
+}
+
+.feed-item-actions { margin-top: auto; }
+
+/* Slightly larger image for stacked layout */
+.feed-item-inner.stacked .article-image { height: 260px; }
+
+/* Subtle hover effect on the whole card */
+.feed-item-card { will-change: transform, box-shadow; }
+.feed-item-card:hover { transform: translateY(-6px) scale(1.005); box-shadow: 0 14px 36px rgba(15,23,42,0.12); }
+
+/* Embedded mode tweaks inside read view to ensure nice alignment */
+.feed-container.embedded .feed-item-inner { gap: 0.75rem; }
+.feed-container.embedded .feed-item-media { flex-basis: 34%; }
+.feed-container.embedded .feed-item-title { font-size: 1rem; }
+
+/* Accessibility and spacing for badges and small text */
+.feed-item-meta { display: flex; gap: 0.5rem; align-items: center; }
+.feed-item-meta .badge { font-size: 0.75rem; padding: 0.35rem 0.55rem; }
+
+/* Placeholder pour image manquante */
+.article-image-placeholder {
+  height: 200px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(37, 99, 235, 0.03));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px dashed rgba(59, 130, 246, 0.12);
+}
+
+.placeholder-content {
+  text-align: center;
+  color: rgba(59, 130, 246, 0.6);
+}
+
+.placeholder-icon {
+  font-size: 2rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Section résumé */
+.article-summary {
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1rem;
+  border-radius: 6px;
+  border-left: 3px solid var(--c-blue);
+}
+
+.summary-text {
+  color: var(--c-text) !important;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  font-style: italic;
+}
+
+.feed-item-card .card-title {
+  color: var(--c-blue);
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
+}
+
+.feed-item-card .card-text {
+  color: var(--c-text);
+  line-height: 1.4;
+}
+
+.feed-item-card .badge {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.feed-item-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.feed-item-card:hover .card-img-top {
+  transform: scale(1.02);
+}
+
+/* Animation d'entrée */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Softer entry animation and smoother transitions */
+.feed-item-card {
+  transition: transform 0.35s cubic-bezier(.2,.8,.2,1), box-shadow 0.35s ease, opacity 0.35s ease;
+  animation: fadeInUp 0.45s cubic-bezier(.2,.8,.2,1);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+}
+
+/* Subtle border / shadow differences for read vs unread */
+.feed-item-card.read {
+  border-color: rgba(34,197,94,0.18);
+  box-shadow: 0 4px 12px rgba(34,197,94,0.06);
+}
+
+.feed-item-card:not(.read) {
+  border-color: rgba(59,130,246,0.06);
+  box-shadow: 0 8px 26px rgba(59,130,246,0.04);
+}
+
+/* Responsive pour les cartes */
+@media (max-width: 768px) {
+  .feed-item-card {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .feed-item-card .card-title {
+    font-size: 1rem;
+  }
+  
+  .feed-item-card .card-text {
+    font-size: 0.85rem;
+  }
+  
+  .feed-item-card .badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
+  }
+  
+  .feed-container {
+    padding: 0 1rem !important;
+    width: calc(100vw - 2rem) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .feed-container .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .feed-container .col {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .feed-container {
+    padding: 0 0.5rem !important;
+    width: calc(100vw - 1rem) !important;
+  }
+}
+
+/* Styles pour l'article aléatoire */
+.random-article-highlight {
+  position: relative;
+  border: 2px solid rgba(34,197,94,0.18);
+  border-radius: 8px;
+  padding: 0.1rem;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(255,255,255,0.01));
+  box-shadow: 0 4px 15px rgba(34, 197, 94, 0.12);
+  animation: randomArticleGlow 2s ease-in-out infinite alternate;
+}
+
+.random-article-highlight::before {
+  content: "🎲";
+  position: absolute;
+  top: -6px;
+  left: 15px;
+  background: rgba(34,197,94,0.95);
+  color: white;
+  padding: 1px 4px;
+  border-radius: 8px;
+  font-size: 0.7rem;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(34, 197, 94, 0.2);
+}
+
+@keyframes randomArticleGlow {
+  from {
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+  }
+  to {
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+  }
+}
+
+.random-article-highlight .feed-item-card {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.random-article-highlight .feed-item-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* Styles pour la barre de statut du cache */
+.cache-status-bar {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0.5rem 0 !important;
+}
+
+.cache-status-bar .badge {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.6rem;
+}
+
+.cache-status-bar button {
+  transition: all 0.3s ease;
+}
+
+.cache-status-bar button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Styles pour le bouton d'actualisation */
+.refresh-button {
+  background: linear-gradient(135deg, var(--accent-a), var(--accent-b)) !important;
+  border: none !important;
+  color: var(--c-text) !important;
+  font-weight: 600 !important;
+  border-radius: 25px !important;
+  padding: 0.5rem 1.2rem !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12) !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  white-space: nowrap !important;
+  font-size: 0.9rem !important;
+}
+
+.refresh-button:hover {
+  background: linear-gradient(135deg, var(--accent-b), var(--accent-a)) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.16) !important;
+  color: var(--c-text) !important;
+}
+
+.refresh-button:active {
+  transform: translateY(0) !important;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4) !important;
+}
+
+.refresh-icon {
+  font-size: 1rem;
+  animation: spin 2s linear infinite;
+  animation-play-state: paused;
+}
+
+.refresh-button:hover .refresh-icon {
+  animation-play-state: running;
+}
+
+.refresh-text {
+  font-size: 0.9rem;
+  letter-spacing: 0.5px;
+}
+
+/* Conteneur du bouton d'actualisation */
+.refresh-button-container {
+  display: flex !important;
+  margin-bottom: 2.5rem !important;
+}
+
+/* Responsive pour le bouton d'actualisation */
+@media (max-width: 768px) {
+  .refresh-button {
+    padding: 0.4rem 1rem !important;
+    font-size: 0.8rem !important;
+  }
+  
+  .refresh-text {
+    display: inline !important;
+  }
+  
+  .refresh-icon {
+    font-size: 0.9rem;
+  }
+  
+  .refresh-button-container {
+    display: flex !important;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Zone d'affichage des articles */
+.feed-container .row.row-cols-1,
+.feed-container .row.row-cols-md-2,
+.feed-container .row.row-cols-lg-3,
+.feed-container .row.row-cols-xl-4 {
+  overflow: visible;
+  max-height: none;
+}
+
+/* Responsive pour les cartes d'articles */
+@media (max-width: 768px) {
+  .feed-container-main {
+    padding: 0 !important;
+  }
+
+  .feed-item-card {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  /* Styles pour les filtres en version mobile */
+  .filter-bar {
+    margin-left: -1rem !important;
+    margin-right: -1rem !important;
+    padding: 1rem !important;
+  background: var(--c-surface);
+    border-radius: 0 !important;
+  }
+
+  .filter-bar > div {
+    width: 100% !important;
+  }
+
+  .filter-bar input,
+  .filter-bar select,
+  .filter-bar button {
+    width: 100% !important;
+    min-width: 100% !important;
+    border-radius: 8px !important;
+  }
+
+  /* Style spécial pour le sélecteur de tri qui contient deux selects */
+  .filter-bar .d-flex.gap-2 {
+    gap: 0.5rem !important;
+  }
+
+  .filter-bar .d-flex.gap-2 select {
+    min-width: 0 !important;
+  }
+
+  .filter-bar .d-flex.gap-2 select:first-child {
+    flex: 1;
+  }
+
+  .filter-bar .d-flex.gap-2 select:last-child {
+    width: 80px !important;
+    min-width: 80px !important;
+  }
+}
+
+.feed-item-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(191, 162, 74, 0.3);
+  border-color: rgba(191, 162, 74, 0.4);
+}
+
